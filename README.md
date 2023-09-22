@@ -7,7 +7,7 @@
 
 ### 开发模式
 * 前端
-   ```yarn dev```
-   
+   ```npm run dev```
+
 * 后端
-  ```yarn start-api```
+  ```npm run start-api```
