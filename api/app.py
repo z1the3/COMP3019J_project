@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from api.exts import db
-from api.route.user_route import create_router
+from exts import db
+from route.user_route import create_router
 
 app = Flask(__name__)
 

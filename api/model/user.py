@@ -1,4 +1,4 @@
-from api.exts import db
+from exts import db
 
 
 class User(db.Model):

@@ -1,7 +1,7 @@
 from flask import Blueprint
-from api.exts import db
+from exts import db
 from flask import request, jsonify, current_app # 导入 current_app
-from api.model.user import User  # 导入模型
+from model.user import User  # 导入模型
 
 
 
