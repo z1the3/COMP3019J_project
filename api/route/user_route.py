@@ -31,7 +31,7 @@ def create_router():
                     'name': user.name,
                     'auth': user.auth
                 }
-                return jsonify(user_data, 201)
+                return jsonify(user_data), 201
             else:
                 return jsonify({'message': 'Invalid password or auth'}), 401  # 返回401表示未授权
         else:
