@@ -13,3 +13,19 @@ export const postUserLogin = async (params: {
     })
     return res.json()
 }
+
+export const postUserRegister = async (params:{
+    userId: string;
+    password: string;
+    name: string;
+    auth: '0' | '1'
+}) => {
+    const res = await fetch('api/user/register', {
+        method: "POST",
+        headers:{
+            "Content-Type": "application/json",
+        },
+        body:JSON.stringify(params)
+    })
+    return res.json()
+}
