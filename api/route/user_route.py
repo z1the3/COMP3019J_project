@@ -4,8 +4,7 @@ from flask import request, jsonify, current_app # 导入 current_app
 from model.user import User  # 导入模型
 
 
-
-def create_router():
+def create_user_router():
     user_bp = Blueprint('user_bp', __name__)
     @user_bp.route('/index', methods=['GET'])
     def index():
@@ -39,7 +38,7 @@ def create_router():
 
     @user_bp.route('/user/register', methods=['POST'])
     def post_user_register():
-        app = current_app._get_current_object()
+        # app = current_app._get_current_object()
         data = request.get_json()
         userId = data.get('userId')
         password = data.get('password')

@@ -1,5 +1,4 @@
-from api.exts import db
-
+from exts import db
 
 class Reservation(db.Model):
     __tablename__ = 'reservation'
@@ -8,18 +7,18 @@ class Reservation(db.Model):
     name = db.Column(db.String(255), nullable=False)
     startTimeLimit = db.Column(db.Time, nullable=False)
     endTimeLimit = db.Column(db.Time, nullable=False)
+    userId = db.Column(db.String(255), nullable=False)
+    detail = db.Column(db.Text)
 
-    # 建立与关联表的一对多关系
+    # Define the relationship with ReservationDate
     dates = db.relationship('ReservationDate', backref='reservation', lazy=True)
 
-    def __init__(self, name, startTimeLimit, endTimeLimit):
+    def __init__(self, name, startTimeLimit, endTimeLimit, userId, detail):
         self.name = name
         self.startTimeLimit = startTimeLimit
         self.endTimeLimit = endTimeLimit
-
-    def __repr__(self):
-        return f'<Reservation {self.name}>'
-
+        self.userId = userId
+        self.detail = detail
 
 class ReservationDate(db.Model):
     __tablename__ = 'reservation_date'
@@ -31,6 +30,3 @@ class ReservationDate(db.Model):
     def __init__(self, reservation_id, date=None):
         self.reservation_id = reservation_id
         self.date = date
-
-    def __repr__(self):
-        return f'<ReservationDate {self.date}>'
