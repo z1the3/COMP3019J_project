@@ -27,3 +27,5 @@ dist-ssr
 api/venv/*
 api/__pycache__/
 api/*/__pycache__/
+
+*.cpython-39.pyc

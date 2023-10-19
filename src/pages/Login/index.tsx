@@ -33,13 +33,17 @@ export const Login = () => {
         }
         navigator('/main')
 
-        const res = await postUserLogin(params)
-        if (res.code === '0') {
-            Message.error('UserId or password is not correct')
-        } else if (res.code === '1') {
-            navigator('/main', { state: { token: userId, userId } })
+        const raw = await postUserLogin(params)
+        if (raw.status === 201) {
+            const res = await raw.json()
+            navigator('/main', { state: { auth: res.auth, userId: res.userId, name: res.name, } })
+        } else {
+            Message.error(raw.statusText)
         }
+
+
     }
+
 
     return <>
         <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
@@ -53,11 +57,10 @@ export const Login = () => {
                             if (!value) {
                                 return cb('The userId is required');
                             }
-
                             return cb();
                         },
                     }]}>
-                        <Input placeholder='Please enter Email' />
+                        <Input placeholder='Please enter user id' />
                     </FormItem>
                     <FormItem field='password' className={'flex justify-center'} rules={[{
                         validator(value, cb) {
@@ -68,7 +71,7 @@ export const Login = () => {
                             return cb();
                         },
                     }]}>
-                        <Input placeholder='Please enter password' />
+                        <Input.Password placeholder='Please enter password' />
                     </FormItem>
                     <div className={'flex justify-around mb-3'}>
                         <Button
@@ -79,7 +82,7 @@ export const Login = () => {
                                 }
                             }} type='primary' >Login</Button>
                         <Button className={'w-32'} onClick={() => {
-                            navigator('/main', { state: { auth: 'guest' } })
+                            navigator('/main', { state: { auth: -1 } })
                         }} type='primary' >Guest Login</Button>
                     </div>
 

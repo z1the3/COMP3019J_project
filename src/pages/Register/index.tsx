@@ -42,13 +42,13 @@ export const Register = () => {
         if (v.password) {
             setPassword(v.password)
         }
-        if (v.name){
+        if (v.name) {
             setName(v.name)
         }
     }
-    
+
     return <>
-    <div className={styled.container}>
+        <div className={styled.container}>
             <div className={styled.card}>
                 <div className={styled.title}>Event Reservation Center</div>
                 <Divider />
@@ -85,7 +85,7 @@ export const Register = () => {
                             return cb();
                         },
                     }]}>
-                        <Input placeholder='Please enter password' />
+                        <Input.Password placeholder='Please enter password' />
                     </FormItem>
                     <FormItem style={{ justifyContent: 'center' }} >
                         <Button onClick={() => {

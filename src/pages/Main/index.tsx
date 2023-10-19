@@ -1,66 +1,81 @@
-import { Divider, Link, Table, TableColumnProps } from "@arco-design/web-react"
+import { Divider, Link, Message, Table, TableColumnProps } from "@arco-design/web-react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, useNavigation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
+import { getAllReservation } from "../../service/api";
+import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
-    const state: Record<string, string> = useLocation().state || {}
+    const state: Record<string, string | number> = useLocation().state || {}
     const [isGuest, setIsGuest] = useState<boolean>(false)
     const [isUser, setIsUser] = useState<boolean>(false)
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
-
+    const [allReservationData, setAllReservationData] = useState([])
 
     const navigator = useNavigate()
     useEffect(() => {
-        if (state.auth === 'guest') {
-            // setIsGuest(true)
-            setIsGuest(false)
-            // setIsUser(true)
+        if (state.auth === 1) {
             setIsAdmin(true)
-            return
+        } else if (state.auth === 0) {
+            setIsUser(true)
+        } else if (state.auth === -1) {
+            setIsGuest(true)
         }
-        if (!state.userId) {
+
+        if (!state.userId && state.auth !== -1) {
             navigator("/")
         }
+
+        getAllReservationReq()
+
     }, [])
 
+    const getAllReservationReq = async () => {
+        const res = await getAllReservation()
+        if (res.status === 201) {
+            console.log(res)
 
-    const columns: TableColumnProps[] = [
+        } else {
+            Message.error(res.statusText)
+        }
+
+    }
+    const columns: ColumnProps<unknown>[] = [
         {
             title: 'Name',
             dataIndex: 'name',
         },
         {
             title: 'Service Providers',
-            dataIndex: 'salary',
+            dataIndex: 'userId',
         },
         {
             title: 'Start Time',
-            dataIndex: 'address',
+            dataIndex: 'startTimeLimit',
         },
         {
             title: 'End Time',
-            dataIndex: 'email',
+            dataIndex: 'endTimeLimit',
         },
     ];
 
 
-    const userColumns = [{
+    const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
         dataIndex: 'name',
     },
     {
         title: 'Service Providers',
-        dataIndex: 'service',
+        dataIndex: 'userId',
     },
     {
         title: 'Start Time',
-        dataIndex: 'startTime',
+        dataIndex: 'startTimeLimit',
     },
     {
         title: 'End Time',
-        dataIndex: 'endTime',
+        dataIndex: 'endTimeLimit',
     }, {
         title: 'Operation',
         fixed: 'right',
@@ -73,23 +88,15 @@ export const Main = () => {
             </div>)
 
     },]
-    const data = [
-        {
-            key: '1',
-            name: 'aaa',
-            startTime: '222',
-            service: '111',
-            endTime: '3333',
-            operation: ''
-        }
-    ];
+
 
 
     return <>
         <div className={'container w-screen h-screen flex flex-col'}>
             <div className={'w-screen h-16 bg-white flex'}>
                 <div className={'w-screen text-center font-bold text-4xl leading-[4rem]'}>Event Reservation Center</div>
-                <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}</div>
+                <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}{(isAdmin || isUser) && state.name}</div>
+                <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
             </div>
             <div className={'w-screen flex-1 flex justify-center items-center'}>
                 {/* guest table */}
@@ -105,7 +112,7 @@ export const Main = () => {
                             format='YYYY-MM-DD'
                             placeholder={['start date', 'end date']}
                         />
-                        <Table scroll={{ y: true }} columns={columns} data={data} pagination={false} />
+                        <Table scroll={{ y: true }} columns={columns} data={allReservationData} pagination={false} />
                     </div>
                 </div>}
 
@@ -124,7 +131,7 @@ export const Main = () => {
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
                                 />
-                                <Table scroll={{ y: true }} columns={userColumns} data={data} pagination={false} />
+                                <Table scroll={{ y: true }} columns={userColumns} data={allReservationData} pagination={false} />
                             </div>
                         </div>
                         <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
@@ -139,7 +146,7 @@ export const Main = () => {
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
                                 />
-                                <Table scroll={{ y: true }} columns={userColumns} data={data} pagination={false} />
+                                <Table scroll={{ y: true }} columns={userColumns} data={allReservationData} pagination={false} />
                             </div>
                         </div>
                     </div>
@@ -164,7 +171,7 @@ export const Main = () => {
                                         format='YYYY-MM-DD'
                                         placeholder={['start date', 'end date']}
                                     />
-                                    <Table scroll={{ y: true }} columns={userColumns} data={data} pagination={false} />
+                                    <Table scroll={{ y: true }} columns={userColumns} data={allReservationData} pagination={false} />
                                 </div>
                             </div>
                         </div>
