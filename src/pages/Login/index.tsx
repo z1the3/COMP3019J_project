@@ -1,6 +1,5 @@
 import { Button, Divider, Form, Input, Link, Message, Space } from "@arco-design/web-react"
 import "@arco-design/web-react/dist/css/arco.css";
-import styled from "./index.module.css"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { postUserLogin } from "../../service/api";
@@ -43,13 +42,13 @@ export const Login = () => {
     }
 
     return <>
-        <div className={styled.container}>
-            <div className={styled.card}>
-                <div className={styled.title}>Event Reservation Center</div>
+        <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
+            <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
+                <div className={'text-4xl '}>Event Reservation Center</div>
                 <Divider />
-                <div className={styled.subTitle}>{`${identity} Login`}</div>
-                <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' style={{ justifyContent: 'center' }} >
-                    <FormItem field='userId' style={{ justifyContent: 'center' }} rules={[{
+                <div className={'text-base mb-4'}>{`${identity} Login`}</div>
+                <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' className={'w-5/6 flex justify-start'} >
+                    <FormItem field='userId' className={'flex justify-center'} rules={[{
                         validator(value, cb) {
                             if (!value) {
                                 return cb('The userId is required');
@@ -60,7 +59,7 @@ export const Login = () => {
                     }]}>
                         <Input placeholder='Please enter Email' />
                     </FormItem>
-                    <FormItem field='password' style={{ justifyContent: 'center' }} rules={[{
+                    <FormItem field='password' className={'flex justify-center'} rules={[{
                         validator(value, cb) {
                             if (!value) {
                                 return cb('The password is required');
@@ -71,20 +70,24 @@ export const Login = () => {
                     }]}>
                         <Input placeholder='Please enter password' />
                     </FormItem>
-                    <FormItem style={{ justifyContent: 'center' }} >
-                        <Button onClick={() => {
-                            form.validate();
-                            if (userId && password) {
-                                postUserLoginReq()
-                            }
-                        }} type='primary' style={{ width: 300, marginLeft: 50 }}>Login</Button>
-                    </FormItem>
-                    <Space style={{ display: 'flex', justifyContent: 'center' }}>
-                        <div style={{ width: 300, display: 'flex', justifyContent: 'space-between' }}>
-                            <Link onClick={() => navigator('/register')}>Register</Link>
-                            <Link onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
-                        </div>
-                    </Space>
+                    <div className={'flex justify-around mb-3'}>
+                        <Button
+                            className={'w-32'} onClick={() => {
+                                form.validate();
+                                if (userId && password) {
+                                    postUserLoginReq()
+                                }
+                            }} type='primary' >Login</Button>
+                        <Button className={'w-32'} onClick={() => {
+                            navigator('/main', { state: { auth: 'guest' } })
+                        }} type='primary' >Guest Login</Button>
+                    </div>
+
+
+                    <div className={'flex justify-between items-center'}>
+                        <Link onClick={() => navigator('/register')}>Register</Link>
+                        <Link onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
+                    </div>
                 </Form>
             </div>
         </div >
