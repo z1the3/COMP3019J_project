@@ -1,4 +1,4 @@
-import { Divider, Link, Message, Table, TableColumnProps } from "@arco-design/web-react"
+import { Divider, Link, Message, Table } from "@arco-design/web-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
@@ -11,7 +11,7 @@ export const Main = () => {
     const [isGuest, setIsGuest] = useState<boolean>(false)
     const [isUser, setIsUser] = useState<boolean>(false)
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
-    const [allReservationData, setAllReservationData] = useState([])
+    const [allReservationData, setAllReservationData] = useState<Record<string, string | number>[]>([])
 
     const navigator = useNavigate()
     useEffect(() => {
@@ -25,6 +25,7 @@ export const Main = () => {
 
         if (!state.userId && state.auth !== -1) {
             navigator("/")
+            return
         }
 
         getAllReservationReq()
@@ -32,12 +33,14 @@ export const Main = () => {
     }, [])
 
     const getAllReservationReq = async () => {
-        const res = await getAllReservation()
-        if (res.status === 201) {
-            console.log(res)
+        const raw = await getAllReservation()
+        if (raw.status === 200) {
+            const res = await raw.json() as Record<string, Record<string, string | number>[]>
+            res.reservations.map((item) => ({ ...item, key: item.id }))
+            setAllReservationData(res.reservations.slice(0, 6))
 
         } else {
-            Message.error(res.statusText)
+            Message.error(raw.statusText)
         }
 
     }
@@ -126,7 +129,7 @@ export const Main = () => {
                                     <Divider />
                                 </div>
                             </div>
-                            <div className={'h-full p-8'}>
+                            <div className={' p-8'}>
                                 <RangePicker className={"mb-4"}
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
@@ -141,7 +144,7 @@ export const Main = () => {
                                     <Divider />
                                 </div>
                             </div>
-                            <div className={'h-full p-8'}>
+                            <div className={' p-8'}>
                                 <RangePicker className={"mb-4"}
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
@@ -175,7 +178,6 @@ export const Main = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 )}
             </div>
