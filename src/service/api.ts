@@ -30,7 +30,7 @@ export const postUserRegister = async (params: {
     return res
 }
 
-export const getAllReservation = async () => {
+export const getAllReservation = async (): Promise<Response> => {
     const res = await fetch('api/reservation/all', {
         method: "GET",
         headers: {

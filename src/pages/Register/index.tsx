@@ -4,6 +4,8 @@ import { Button, Divider, Form, Input, Link, Message, Space } from "@arco-design
 import { useState } from "react"
 import styled from "./index.module.css"
 const FormItem = Form.Item;
+import backgroundImage from "../../assets/background.png"
+
 export const Register = () => {
     const identities = ['User', 'Administor']
     const navigator = useNavigate()
@@ -12,6 +14,10 @@ export const Register = () => {
     const [password, setPassword] = useState<string>('')
     const [name, setName] = useState<string>('')
     const [form] = Form.useForm();
+    const background = {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+    }
 
     const postUserRegisterReq = async () => {
         const params = {
@@ -48,8 +54,9 @@ export const Register = () => {
     }
 
     return <>
-        <div className={styled.container}>
-            <div className={styled.card}>
+    <div style={background}>
+        <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
+            <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
                 <div className={styled.title}>Event Reservation Center</div>
                 <Divider />
                 <div className={styled.subTitle}>{`${identity} Register`}</div>
@@ -93,7 +100,7 @@ export const Register = () => {
                             if (userId && password && name) {
                                 postUserRegisterReq()
                             }
-                        }} type='primary' style={{ width: 300, marginLeft: 50 }}>Register</Button>
+                        }} type='primary' style={{ width: 293 }}>Register</Button>
                     </FormItem>
                     <Space style={{ display: 'flex', justifyContent: 'center' }}>
                         <div style={{ width: 300, display: 'flex', justifyContent: 'center' }}>
@@ -103,5 +110,6 @@ export const Register = () => {
                 </Form>
             </div>
         </div >
+        </div>
     </>
 }

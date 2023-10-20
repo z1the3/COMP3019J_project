@@ -24,7 +24,8 @@ export const Main = () => {
         }
 
         if (!state.userId && state.auth !== -1) {
-            navigator("/")
+            // navigator("/")
+            setIsUser(true)
             return
         }
 
@@ -115,13 +116,13 @@ export const Main = () => {
                             format='YYYY-MM-DD'
                             placeholder={['start date', 'end date']}
                         />
-                        <Table scroll={{ y: true }} columns={columns} data={allReservationData} pagination={false} />
+                        <Table scroll={{ y: true }} virtualized columns={columns} data={allReservationData} pagination={false} />
                     </div>
                 </div>}
 
                 {/* user table */}
                 {isUser && (
-                    <div className={'w-screen h-5/6 flex justify-around'}>
+                    <div className={'w-screen h-5/6 flex justify-around space-x-3'}>
                         <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
                             <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
                                 <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>My Reservation</div>
@@ -134,7 +135,7 @@ export const Main = () => {
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
                                 />
-                                <Table scroll={{ y: true }} columns={userColumns} data={allReservationData} pagination={false} />
+                                <Table scroll={{ y: true }} virtualized columns={userColumns} data={allReservationData} pagination={false} />
                             </div>
                         </div>
                         <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
@@ -149,7 +150,7 @@ export const Main = () => {
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
                                 />
-                                <Table scroll={{ y: true }} columns={userColumns} data={allReservationData} pagination={false} />
+                                <Table scroll={{ y: true }} virtualized columns={userColumns} data={allReservationData} pagination={false} />
                             </div>
                         </div>
                     </div>
@@ -174,7 +175,7 @@ export const Main = () => {
                                         format='YYYY-MM-DD'
                                         placeholder={['start date', 'end date']}
                                     />
-                                    <Table scroll={{ y: true }} columns={userColumns} data={allReservationData} pagination={false} />
+                                    <Table scroll={{ y: true }} virtualized columns={userColumns} data={allReservationData} pagination={false} />
                                 </div>
                             </div>
                         </div>
@@ -183,6 +184,5 @@ export const Main = () => {
             </div>
 
         </div >
-
     </>
 }

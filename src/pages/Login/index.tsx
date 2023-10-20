@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { postUserLogin } from "../../service/api";
 const FormItem = Form.Item;
+import backgroundImage from "../../assets/background.png"
 export const Login = () => {
     const identities = ['User', 'Administor']
     const navigator = useNavigate()
@@ -11,6 +12,10 @@ export const Login = () => {
     const [userId, setUserID] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [form] = Form.useForm();
+    const background = {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+    }
 
     const handleInput = (v: Record<string, string>) => {
         if (v.userId) {
@@ -46,6 +51,7 @@ export const Login = () => {
 
 
     return <>
+    <div style={background}>
         <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
             <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
                 <div className={'text-4xl '}>Event Reservation Center</div>
@@ -94,5 +100,6 @@ export const Login = () => {
                 </Form>
             </div>
         </div >
+    </div>
     </>
 }
