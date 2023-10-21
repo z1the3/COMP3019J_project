@@ -13,6 +13,26 @@ export const Main = () => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
     const [allReservationData, setAllReservationData] = useState<Record<string, string | number>[]>([])
 
+    // const mockData = [
+    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
+    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
+    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
+    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
+    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
+    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
+    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
+    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
+    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
+    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
+    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
+    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
+    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
+    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
+    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
+    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
+    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
+    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
+    //   ];
     const navigator = useNavigate()
     useEffect(() => {
         if (state.auth === 1) {
@@ -29,7 +49,7 @@ export const Main = () => {
         }
 
         getAllReservationReq()
-
+        // setAllReservationData(mockData)
     }, [])
 
     const getAllReservationReq = async () => {
@@ -38,7 +58,6 @@ export const Main = () => {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.reservations.map((item) => ({ ...item, key: item.id }))
             setAllReservationData(res.reservations.slice(0, 20))
-
         } else {
             Message.error(raw.statusText)
         }
@@ -92,8 +111,6 @@ export const Main = () => {
 
     },]
 
-
-
     return <>
         <div className={'container w-screen h-screen flex flex-col'}>
             <div className={'w-screen h-16 bg-white flex'}>
@@ -115,7 +132,7 @@ export const Main = () => {
                             format='YYYY-MM-DD'
                             placeholder={['start date', 'end date']}
                         />
-                        <Table scroll={{ y: true }} virtualized={true} columns={columns} data={allReservationData} pagination={false} />
+                        <Table scroll={{ y: 300}} columns={columns} data={allReservationData} pagination={false} />
                     </div>
                 </div>}
 

@@ -7,18 +7,26 @@ const FormItem = Form.Item;
 import backgroundImage from "../../assets/background.png"
 
 export const Register = () => {
+    // Regarding the status of the input user ID and password
     const identities = ['User', 'Administor']
+
+     // Hooks for route jumps
     const navigator = useNavigate()
     const [identity, setIdentity] = useState<string>('User')
     const [userId, setUserID] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [name, setName] = useState<string>('')
+
+    // Maintained Forms
     const [form] = Form.useForm();
+
+    // background style
     const background = {
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
     }
 
+    // register request
     const postUserRegisterReq = async () => {
         const params = {
             userId,
@@ -54,13 +62,19 @@ export const Register = () => {
         }
     }
 
+        // The dynamic HTML structure is organized in the form of jsx/tsx because we use React.js
     return <>
         <div style={background}>
+            {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
+            {/* Register Card */}
             <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
                 <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
+                    {/* Title/Website Name */}
                     <div className={styled.title}>Event Reservation Center</div>
                     <Divider />
+                    {/* Switch between user register or administrator register based on different identities */}
                     <div className={styled.subTitle}>{`${identity} Register`}</div>
+                    {/* The form used for register, including some rules (required) */}
                     <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' style={{ width: 400, justifyContent: 'center' }} >
                         <FormItem field='name' style={{ justifyContent: 'center' }} rules={[{
                             validator(value, cb) {
@@ -95,6 +109,7 @@ export const Register = () => {
                         }]}>
                             <Input.Password placeholder='Please enter password' />
                         </FormItem>
+                        {/* Normal register button */}
                         <FormItem style={{ justifyContent: 'center' }} >
                             <Button onClick={() => {
                                 form.validate();
@@ -103,6 +118,7 @@ export const Register = () => {
                                 }
                             }} type='primary' long>Register</Button>
                         </FormItem>
+                        {/* Jump to the login page and post the register message */}
                         <Space style={{ display: 'flex', justifyContent: 'center' }}>
                             <div style={{ width: 300, display: 'flex', justifyContent: 'center' }}>
                                 <Link onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
