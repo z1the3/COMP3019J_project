@@ -33,11 +33,11 @@ export const Register = () => {
         }
         navigator('/')
 
-        const res = await postUserRegister(params)
-        if (res.code === '0') {
+        const raw = await postUserRegister(params)
+        if (raw.status === 200) {
             Message.error('Register failed')
-        } else if (res.code === '1') {
-            navigator('/', { state: { token: userId, userId } })
+        } else if (raw.status === 201) {
+            navigator('/')
         }
     }
 
@@ -67,27 +67,27 @@ export const Register = () => {
                                 return cb('The name is required');
                             }
 
-                            return cb();
-                        },
-                    }]}>
-                        <Input placeholder='Please enter name' />
-                    </FormItem>
-                    <FormItem field='userId' style={{ justifyContent: 'center' }} rules={[{
-                        validator(value, cb) {
-                            if (!value) {
-                                return cb('The userId is required');
-                            }
+                                return cb();
+                            },
+                        }]}>
+                            <Input placeholder='Please enter name' />
+                        </FormItem>
+                        <FormItem field='userId' style={{ justifyContent: 'center' }} rules={[{
+                            validator(value, cb) {
+                                if (!value) {
+                                    return cb('The user Id is required');
+                                }
 
-                            return cb();
-                        },
-                    }]}>
-                        <Input placeholder='Please enter Email' />
-                    </FormItem>
-                    <FormItem field='password' style={{ justifyContent: 'center' }} rules={[{
-                        validator(value, cb) {
-                            if (!value) {
-                                return cb('The password is required');
-                            }
+                                return cb();
+                            },
+                        }]}>
+                            <Input placeholder='Please enter user Id' />
+                        </FormItem>
+                        <FormItem field='password' style={{ justifyContent: 'center' }} rules={[{
+                            validator(value, cb) {
+                                if (!value) {
+                                    return cb('The password is required');
+                                }
 
                             return cb();
                         },
