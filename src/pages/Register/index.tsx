@@ -60,7 +60,7 @@ export const Register = () => {
                 <div className={styled.title}>Event Reservation Center</div>
                 <Divider />
                 <div className={styled.subTitle}>{`${identity} Register`}</div>
-                <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' style={{ justifyContent: 'center' }} >
+                <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' style={{width:400, justifyContent: 'center' }} >
                     <FormItem field='name' style={{ justifyContent: 'center' }} rules={[{
                         validator(value, cb) {
                             if (!value) {
@@ -100,7 +100,7 @@ export const Register = () => {
                             if (userId && password && name) {
                                 postUserRegisterReq()
                             }
-                        }} type='primary' style={{ width: 293 }}>Register</Button>
+                        }} type='primary' long>Register</Button>
                     </FormItem>
                     <Space style={{ display: 'flex', justifyContent: 'center' }}>
                         <div style={{ width: 300, display: 'flex', justifyContent: 'center' }}>
