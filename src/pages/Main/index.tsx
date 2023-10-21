@@ -7,33 +7,18 @@ import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
+    // Status brought over from the previous page
     const state: Record<string, string | number> = useLocation().state || {}
+    // Status of user identity
     const [isGuest, setIsGuest] = useState<boolean>(false)
     const [isUser, setIsUser] = useState<boolean>(false)
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
+    // All reservations currently requested
     const [allReservationData, setAllReservationData] = useState<Record<string, string | number>[]>([])
 
-    // const mockData = [
-    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
-    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
-    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
-    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
-    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
-    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
-    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
-    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
-    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
-    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
-    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
-    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
-    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
-    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
-    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
-    //     { name: "Reservation 1", userId: "user123", startTimeLimit: 111, endTimeLimit: 111, key: "key123" },
-    //     { name: "Reservation 2", userId: "user456", startTimeLimit: 111, endTimeLimit: 111, key: "key456" },
-    //     { name: "Reservation 3", userId: "user789", startTimeLimit: 111, endTimeLimit: 111, key: "key789" },
-    //   ];
+    // Hooks for route jumps
     const navigator = useNavigate()
+    // Status brought back from the previous page
     useEffect(() => {
         if (state.auth === 1) {
             setIsAdmin(true)
@@ -43,6 +28,7 @@ export const Main = () => {
             setIsGuest(true)
         }
 
+        // If it is not a tourist login and did not enter through the login button, block login
         if (!state.userId && state.auth !== -1) {
             navigator("/")
             return
@@ -51,18 +37,21 @@ export const Main = () => {
         getAllReservationReq()
         // setAllReservationData(mockData)
     }, [])
-
+    // Initiate a request to obtain all appointment data
     const getAllReservationReq = async () => {
         const raw = await getAllReservation()
         if (raw.status === 200) {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.reservations.map((item) => ({ ...item, key: item.id }))
-            setAllReservationData(res.reservations.slice(0, 20))
+            setAllReservationData(res.reservations.slice(0, 16))
+
         } else {
+            // request failure
             Message.error(raw.statusText)
         }
 
     }
+    // All fields of the appointment data table and Mapping relationship with data sources (for guest)
     const columns: ColumnProps<unknown>[] = [
         {
             title: 'Name',
@@ -82,7 +71,7 @@ export const Main = () => {
         },
     ];
 
-
+// for user
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
         dataIndex: 'name',
@@ -111,11 +100,17 @@ export const Main = () => {
 
     },]
 
+
+    // The dynamic HTML structure is organized in the form of jsx/tsx because we use React.js
     return <>
         <div className={'container w-screen h-screen flex flex-col'}>
+             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
             <div className={'w-screen h-16 bg-white flex'}>
+                {/* title */}
                 <div className={'w-screen text-center font-bold text-4xl leading-[4rem]'}>Event Reservation Center</div>
+                {/* identity */}
                 <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}{(isAdmin || isUser) && state.name}</div>
+                {/* log out button */}
                 <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
             </div>
             <div className={'w-screen flex-1 flex justify-center items-center'}>
