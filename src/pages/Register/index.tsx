@@ -31,13 +31,14 @@ export const Register = () => {
             name: string,
             auth: '0' | '1'
         }
-        navigator('/')
 
         const raw = await postUserRegister(params)
-        if (raw.status === 200) {
-            Message.error('Register failed')
-        } else if (raw.status === 201) {
+        if (raw.status === 201) {
             navigator('/')
+            Message.success('register success')
+        } else {
+            const res = await raw.json()
+            Message.error(res.message)
         }
     }
 
@@ -54,18 +55,18 @@ export const Register = () => {
     }
 
     return <>
-    <div style={background}>
-        <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
-            <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
-                <div className={styled.title}>Event Reservation Center</div>
-                <Divider />
-                <div className={styled.subTitle}>{`${identity} Register`}</div>
-                <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' style={{width:400, justifyContent: 'center' }} >
-                    <FormItem field='name' style={{ justifyContent: 'center' }} rules={[{
-                        validator(value, cb) {
-                            if (!value) {
-                                return cb('The name is required');
-                            }
+        <div style={background}>
+            <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
+                <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
+                    <div className={styled.title}>Event Reservation Center</div>
+                    <Divider />
+                    <div className={styled.subTitle}>{`${identity} Register`}</div>
+                    <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' style={{ width: 400, justifyContent: 'center' }} >
+                        <FormItem field='name' style={{ justifyContent: 'center' }} rules={[{
+                            validator(value, cb) {
+                                if (!value) {
+                                    return cb('The name is required');
+                                }
 
                                 return cb();
                             },
@@ -89,27 +90,27 @@ export const Register = () => {
                                     return cb('The password is required');
                                 }
 
-                            return cb();
-                        },
-                    }]}>
-                        <Input.Password placeholder='Please enter password' />
-                    </FormItem>
-                    <FormItem style={{ justifyContent: 'center' }} >
-                        <Button onClick={() => {
-                            form.validate();
-                            if (userId && password && name) {
-                                postUserRegisterReq()
-                            }
-                        }} type='primary' long>Register</Button>
-                    </FormItem>
-                    <Space style={{ display: 'flex', justifyContent: 'center' }}>
-                        <div style={{ width: 300, display: 'flex', justifyContent: 'center' }}>
-                            <Link onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
-                        </div>
-                    </Space>
-                </Form>
-            </div>
-        </div >
+                                return cb();
+                            },
+                        }]}>
+                            <Input.Password placeholder='Please enter password' />
+                        </FormItem>
+                        <FormItem style={{ justifyContent: 'center' }} >
+                            <Button onClick={() => {
+                                form.validate();
+                                if (userId && password && name) {
+                                    postUserRegisterReq()
+                                }
+                            }} type='primary' long>Register</Button>
+                        </FormItem>
+                        <Space style={{ display: 'flex', justifyContent: 'center' }}>
+                            <div style={{ width: 300, display: 'flex', justifyContent: 'center' }}>
+                                <Link onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
+                            </div>
+                        </Space>
+                    </Form>
+                </div>
+            </div >
         </div>
     </>
 }

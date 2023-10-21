@@ -37,7 +37,7 @@ export const Main = () => {
         if (raw.status === 200) {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.reservations.map((item) => ({ ...item, key: item.id }))
-            setAllReservationData(res.reservations.slice(0, 15))
+            setAllReservationData(res.reservations.slice(0, 20))
 
         } else {
             Message.error(raw.statusText)
