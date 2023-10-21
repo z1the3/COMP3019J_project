@@ -8,7 +8,8 @@ def create_reservation_router():
     @reservation_bp.route('/reservation/all', methods=['GET'])
     def get_all_reservations():
         try:
-            reservations = Reservation.query.all()  # Retrieve all reservations from the database
+            # Retrieve all reservations from the database
+            reservations = Reservation.query.all()
 
             reservations_data = []
             for reservation in reservations:
@@ -25,6 +26,7 @@ def create_reservation_router():
                 }
                 reservations_data.append(reservation_data)
 
+            # Prepare the response data
             response = {
                 'code': 0,
                 'reservations': reservations_data
@@ -33,10 +35,11 @@ def create_reservation_router():
             return jsonify(response)  # Return a JSON response
 
         except Exception as e:
+            # Handle exceptions and return an error response
             response = {
                 'code': 1,
                 'error_message': str(e)
             }
-            return jsonify(response), 500
+            return jsonify(response), 500  # HTTP status code 500 for internal server error
 
-    return reservation_bp
+    return reservation_bp  # Return the reservation Blueprint
