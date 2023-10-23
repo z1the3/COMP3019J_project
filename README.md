@@ -17,3 +17,5 @@
 ```Wang Shizheng (21207489) is responsible for the registration page style and logic, partial style adjustment of the main page, and front-end and back-end joint debugging.```
 
 ```Qite (21207494) is responsible for the login page style and logic, the main page style and logic, and front-end and back-end joint debugging.```
+
+```Liu Huiyang (21207451) is responsible for writing and development of back-end flask interface, design of database.```
