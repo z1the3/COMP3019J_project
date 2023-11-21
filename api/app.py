@@ -7,7 +7,7 @@ from route.user_route import create_user_router
 app = Flask(__name__)
 
 # Configure the database connection, replace with your own database details
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/appointment'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:liunb0905@localhost:3306/appointment'
 # Initialize the Flask-SQLAlchemy extension
 db.init_app(app)
 
