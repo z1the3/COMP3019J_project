@@ -36,7 +36,8 @@ app = Flask(__name__)
 # 应用配置
 app.config.from_object(Config)
 # 设置数据库连接
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:liunb0905@localhost:3306/appointment'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:liunb0905@localhost:3306/appointment'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/appointment'
 db.init_app(app)
 
 # 创建蓝图

@@ -1,10 +1,14 @@
-import { Button, Divider, Form, Input, Link, Message, Space } from "@arco-design/web-react"
+import { Button, Divider, Form, Input, Link, Message, Space, Switch } from "@arco-design/web-react"
 import "@arco-design/web-react/dist/css/arco.css";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { postUserLogin } from "../../service/api";
 const FormItem = Form.Item;
 import backgroundImage from "../../assets/background.png"
+import { useModeSwitch } from "../../hooks/useModeSwitch";
+import { DarkModeSwitch } from "../../components/DarkModeSwitch";
+import { ModeContext } from "../../App";
+
 export const Login = () => {
     // Regarding the status of the input user ID and password
     const identities = ['User', 'Administor']
@@ -12,6 +16,8 @@ export const Login = () => {
     const [userId, setUserID] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
+
+    const { mode, setCurrentMode } = useModeSwitch()
     // Hooks for route jumps
     const navigator = useNavigate()
     // Maintained Forms
@@ -63,12 +69,12 @@ export const Login = () => {
             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
             {/* Login Card */}
             <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
-                <div className={'flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center bg-white rounded-3xl'}>
+                <div className={`flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center rounded-3xl ${mode === 'light' ? 'bg-white' : 'bg-black'}`}>
                     {/* Title/Website Name */}
-                    <div className={'text-4xl '}>Event Reservation Center</div>
+                    <div className={`text-4xl ${mode === 'light' ? 'text-black' : 'text-white'}`}>Event Reservation Center</div>
                     <Divider />
                     {/* Switch between user login or administrator login based on different identities */}
-                    <div className={'text-base mb-4'}>{`${identity} Login`}</div>
+                    <div className={`text-base mb-4  ${mode === 'light' ? 'text-black' : 'text-white'}`}>{`${identity} Login`}</div>
                     {/* The form used for login, including some rules (required) */}
                     <Form form={form} onChange={(v) => handleInput(v)} autoComplete='off' className={'w-5/6 flex justify-start'} >
                         <FormItem field='userId' className={'flex justify-center'} rules={[{
@@ -109,7 +115,11 @@ export const Login = () => {
                         {/* Jump to the registration page and switch current identity */}
                         <div className={'flex justify-between items-center'}>
                             <Link onClick={() => navigator('/register')}>Register</Link>
-                            <Link style={{color: '#FF7D00'}} onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
+                            <Link style={{ color: '#FF7D00' }} onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
+
+                        </div>
+                        <div className={'flex justify-center items-center m-5'}>
+                            <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
                         </div>
                     </Form>
                 </div>
