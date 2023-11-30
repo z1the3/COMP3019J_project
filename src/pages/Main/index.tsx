@@ -1,9 +1,10 @@
 import { Divider, Link, Message, Table } from "@arco-design/web-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
-import { getAllReservation } from "../../service/api";
+import { getAllReservation, getUserRegisterReservation } from "../../service/api";
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
+import { columns, userColumns } from "./utils";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
@@ -15,7 +16,21 @@ export const Main = () => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
     // All reservations currently requested
     const [allReservationData, setAllReservationData] = useState<Record<string, string | number>[]>([])
+    // 当前用户已注册的预约
+    const [userReservationData, setUserReservationData] = useState<Record<string, string | number>[]>([])
 
+
+    // 根据所有预约与用户已注册预约，计算出用户未注册预约
+    const notBookingReservationData = useMemo(() => {
+        const notBookingReservations: Record<string, string | number>[] = []
+        const currentIDs = [...userReservationData].map((item) => item.id)
+        allReservationData.forEach((allR) => {
+            if (currentIDs.indexOf(allR.id) === -1) {
+                notBookingReservations.push(allR)
+            }
+        })
+        return notBookingReservations
+    }, [allReservationData, userReservationData])
     // Hooks for route jumps
     const navigator = useNavigate()
     // Status brought back from the previous page
@@ -24,10 +39,11 @@ export const Main = () => {
             setIsAdmin(true)
         } else if (state.auth === 0) {
             setIsUser(true)
+            getUserRegisterReservationReq()
         } else if (state.auth === -1) {
             setIsGuest(true)
         }
-
+        console.log(state)
         // If it is not a tourist login and did not enter through the login button, block login
         if (!state.userId && state.auth !== -1) {
             navigator("/")
@@ -43,7 +59,7 @@ export const Main = () => {
         if (raw.status === 200) {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.reservations.map((item) => ({ ...item, key: item.id }))
-            setAllReservationData(res.reservations.slice(0, 16))
+            setAllReservationData(res.reservations)
 
         } else {
             // request failure
@@ -51,27 +67,23 @@ export const Main = () => {
         }
 
     }
-    // All fields of the appointment data table and Mapping relationship with data sources (for guest)
-    const columns: ColumnProps<unknown>[] = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-        },
-        {
-            title: 'Service Providers',
-            dataIndex: 'userId',
-        },
-        {
-            title: 'Start Time',
-            dataIndex: 'startTimeLimit',
-        },
-        {
-            title: 'End Time',
-            dataIndex: 'endTimeLimit',
-        },
-    ];
 
-// for user
+    // 请求该用户注册的所有预约
+    const getUserRegisterReservationReq = async () => {
+        const raw = await getUserRegisterReservation({ userId: `${state.userId}` })
+        console.log(raw)
+        if (raw.status === 200) {
+            const res = await raw.json() as Record<string, Record<string, string | number>[]>
+            res.reservations.map((item) => ({ ...item, key: item.id }))
+            setUserReservationData(res.reservations)
+
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+    }
+
+    // for user
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
         dataIndex: 'name',
@@ -91,25 +103,28 @@ export const Main = () => {
         title: 'Operation',
         fixed: 'right',
         width: 180,
-        // dataIndex: 'operation',
-        render: () => (
-            <div className="flex">
-                <Link>details</Link>
-                <Link>booking</Link>
-            </div>)
+        render: (col, item) => {
+            return (
+                <div className="flex">
+                    <Link onClick={() => {
+                        navigator('/reservationDetail', {
+                            state: Object.assign(item as Record<string, string>, { userId: state.userId, auth: state.auth, userName: state.userName })
+                        })
+                    }}>details</Link>
+                    <Link>booking</Link>
+                </div>)
+        }
 
-    },]
-
-
+    }]
     // The dynamic HTML structure is organized in the form of jsx/tsx because we use React.js
     return <>
         <div className={'container w-screen h-screen flex flex-col'}>
-             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
+            {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
             <div className={'w-screen h-16 bg-white flex'}>
                 {/* title */}
                 <div className={'w-screen text-center font-bold text-4xl leading-[4rem]'}>Event Reservation Center</div>
                 {/* identity */}
-                <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}{(isAdmin || isUser) && state.name}</div>
+                <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}{(isAdmin || isUser) && state.userName}</div>
                 {/* log out button */}
                 <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
             </div>
@@ -127,7 +142,7 @@ export const Main = () => {
                             format='YYYY-MM-DD'
                             placeholder={['start date', 'end date']}
                         />
-                        <Table scroll={{ y: 300}} columns={columns} data={allReservationData} pagination={false} />
+                        <Table scroll={{ y: 300 }} columns={columns} data={allReservationData} pagination={false} />
                     </div>
                 </div>}
 
@@ -146,12 +161,12 @@ export const Main = () => {
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
                                 />
-                                <Table scroll={{ y: 300}} virtualized={true} columns={userColumns} data={allReservationData} pagination={false} />
+                                <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
                             </div>
                         </div>
                         <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
                             <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                                <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>All Reservation</div>
+                                <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>Not Booking Reservation</div>
                                 <div className={'w-1/6 mx-auto -my-3'} >
                                     <Divider />
                                 </div>
@@ -161,7 +176,7 @@ export const Main = () => {
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
                                 />
-                                <Table scroll={{ y: 300}} virtualized={true} columns={userColumns} data={allReservationData} pagination={false} />
+                                <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
                             </div>
                         </div>
                     </div>
@@ -186,7 +201,7 @@ export const Main = () => {
                                         format='YYYY-MM-DD'
                                         placeholder={['start date', 'end date']}
                                     />
-                                    <Table scroll={{ y: 300}} virtualized={true} columns={userColumns} data={allReservationData} pagination={false} />
+                                    <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={allReservationData} pagination={false} />
                                 </div>
                             </div>
                         </div>

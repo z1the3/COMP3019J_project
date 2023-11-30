@@ -39,3 +39,35 @@ export const getAllReservation = async (): Promise<Response> => {
     })
     return res
 }
+
+// 管理员创建预约
+export const postCreateReservation = async (params: {
+    date: string[];
+    name: string;
+    userId: string;
+    startTimeLimit: string;
+    endTimeLimit: string;
+    description: string
+}): Promise<Response> => {
+    const res = await fetch('api/reservation/create', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            body: JSON.stringify(params)
+
+        }
+    })
+    return res
+}
+
+
+// 请求自己注册过的预约
+export const getUserRegisterReservation = async (params: { userId: string }): Promise<Response> => {
+    const res = await fetch(`api/reservation/userRegister?userId=${params.userId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    return res
+}

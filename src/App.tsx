@@ -4,6 +4,8 @@ import { Register } from './pages/Register'
 import { Main } from './pages/Main'
 import React, { useState } from 'react';
 import { useModeSwitch } from './hooks/useModeSwitch';
+import { CreateActivity } from './pages/CreateActivity';
+import { ReservationDetail } from './pages/ReservationDetail';
 
 
 export const ModeContext = React.createContext<{ mode: string, setCurrentMode: any }>
@@ -21,8 +23,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" Component={Login} />
+          {/* <Route path="/" Component={CreateActivity} /> */}
+
           <Route path="/register" Component={Register} />
           <Route path="/main" Component={Main} />
+          <Route path="/reservationDetail" Component={ReservationDetail} />
 
         </Routes>
       </BrowserRouter>
