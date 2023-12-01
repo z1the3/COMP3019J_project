@@ -71,3 +71,15 @@ export const getUserRegisterReservation = async (params: { userId: string }): Pr
     })
     return res
 }
+
+// 取消预约
+export const postCancelReservation = async (params: { userId: string, reservationId: string }): Promise<Response> => {
+    const res = await fetch(`api/reservation/cancel`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+    })
+    return res
+}

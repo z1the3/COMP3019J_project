@@ -2,7 +2,7 @@ import { Divider, Link, Message, Modal, Table, TimePicker } from "@arco-design/w
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
-import { getAllReservation, getUserRegisterReservation } from "../../service/api";
+import { getAllReservation, getUserRegisterReservation, postCancelReservation } from "../../service/api";
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
 import { columns } from "./utils";
 import dayjs from "dayjs";
@@ -21,6 +21,8 @@ export const Main = () => {
     const [userReservationData, setUserReservationData] = useState<Record<string, string | number>[]>([])
 
     const [timeRange, setTimeRange] = useState<string[]>([])
+
+
 
     // 根据所有预约与用户已注册预约，计算出用户未注册预约, 同时根据日期过滤
     const notBookingReservationData = useMemo(() => {
@@ -53,13 +55,13 @@ export const Main = () => {
     useEffect(() => {
         if (state.auth === 1) {
             setIsAdmin(true)
+            setUserReservationData([])
         } else if (state.auth === 0) {
             setIsUser(true)
             getUserRegisterReservationReq()
         } else if (state.auth === -1) {
             setIsGuest(true)
         }
-        console.log(state)
         // If it is not a tourist login and did not enter through the login button, block login
         if (!state.userId && state.auth !== -1) {
             navigator("/")
@@ -98,6 +100,23 @@ export const Main = () => {
         }
     }
 
+    // 取消预约
+    const postCancelReservationReq = async (item: any) => {
+        const raw = await postCancelReservation({ userId: `${state.userId}`, reservationId: `${item.id}` })
+        if (raw.status === 200) {
+            const res = await raw.json()
+            if (res.code === 1) {
+                Message.success("cancel successful")
+                getAllReservationReq()
+                setAllReservationData([...allReservationData])
+            } else {
+                Message.error(res.message)
+            }
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+    }
     // for user
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
@@ -126,8 +145,12 @@ export const Main = () => {
                             state: Object.assign(item as Record<string, string>, { userId: state.userId, auth: state.auth, userName: state.userName })
                         })
                     }}>details</Link>
-                    <Link
-                    >booking</Link>
+                    {isUser && <Link
+                    >booking</Link>}
+                    {isAdmin && <Link onClick={
+                        () => postCancelReservationReq(item)
+                    }>cancel</Link>}
+
                 </div>)
         }
 
@@ -215,8 +238,11 @@ export const Main = () => {
                                     <RangePicker className={"mb-4"}
                                         format='YYYY-MM-DD'
                                         placeholder={['start date', 'end date']}
+                                        onSelect={(vs) => {
+                                            setTimeRange(vs)
+                                        }}
                                     />
-                                    <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={allReservationData} pagination={false} />
+                                    <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
                                 </div>
                             </div>
                         </div>
