@@ -1,10 +1,11 @@
-import { Divider, Link, Message, Table } from "@arco-design/web-react"
+import { Divider, Link, Message, Modal, Table, TimePicker } from "@arco-design/web-react"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
 import { getAllReservation, getUserRegisterReservation } from "../../service/api";
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
-import { columns, userColumns } from "./utils";
+import { columns } from "./utils";
+import dayjs from "dayjs";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
@@ -15,22 +16,37 @@ export const Main = () => {
     const [isUser, setIsUser] = useState<boolean>(false)
     const [isAdmin, setIsAdmin] = useState<boolean>(false)
     // All reservations currently requested
-    const [allReservationData, setAllReservationData] = useState<Record<string, string | number>[]>([])
+    const [allReservationData, setAllReservationData] = useState<Record<string, string | string[] | number>[]>([])
     // 当前用户已注册的预约
     const [userReservationData, setUserReservationData] = useState<Record<string, string | number>[]>([])
 
+    const [timeRange, setTimeRange] = useState<string[]>([])
 
-    // 根据所有预约与用户已注册预约，计算出用户未注册预约
+    // 根据所有预约与用户已注册预约，计算出用户未注册预约, 同时根据日期过滤
     const notBookingReservationData = useMemo(() => {
-        const notBookingReservations: Record<string, string | number>[] = []
+        const notBookingReservations: Record<string, string | number | string[]>[] = []
         const currentIDs = [...userReservationData].map((item) => item.id)
         allReservationData.forEach((allR) => {
-            if (currentIDs.indexOf(allR.id) === -1) {
+            // 把所有预约的所在时间按从前到后排序
+            const dates = Array.isArray(allR.dates) ? allR.dates.sort((a, b) => {
+                return dayjs(a).isAfter(b) ? 1 : -1
+            }) : []
+            const startDate = dates[0]
+            const endDate = dates[dates.length - 1]
+            if (!startDate || !endDate) {
+                return
+            }
+            // 如果筛选的时间范围不完全包括预约所在时间，则认为用户已经错过
+            if (timeRange[0] && timeRange[1] && (dayjs(timeRange[0]).isAfter(startDate) ||
+                dayjs(timeRange[1]).isBefore(endDate))) {
+                return
+            }
+            if (currentIDs.indexOf(allR.id as number) === -1) {
                 notBookingReservations.push(allR)
             }
         })
         return notBookingReservations
-    }, [allReservationData, userReservationData])
+    }, [allReservationData, userReservationData, timeRange])
     // Hooks for route jumps
     const navigator = useNavigate()
     // Status brought back from the previous page
@@ -71,7 +87,6 @@ export const Main = () => {
     // 请求该用户注册的所有预约
     const getUserRegisterReservationReq = async () => {
         const raw = await getUserRegisterReservation({ userId: `${state.userId}` })
-        console.log(raw)
         if (raw.status === 200) {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.reservations.map((item) => ({ ...item, key: item.id }))
@@ -111,7 +126,8 @@ export const Main = () => {
                             state: Object.assign(item as Record<string, string>, { userId: state.userId, auth: state.auth, userName: state.userName })
                         })
                     }}>details</Link>
-                    <Link>booking</Link>
+                    <Link
+                    >booking</Link>
                 </div>)
         }
 
@@ -157,11 +173,7 @@ export const Main = () => {
                                 </div>
                             </div>
                             <div className={' p-8'}>
-                                <RangePicker className={"mb-4"}
-                                    format='YYYY-MM-DD'
-                                    placeholder={['start date', 'end date']}
-                                />
-                                <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
+                                <Table rowKey={'id'} scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
                             </div>
                         </div>
                         <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
@@ -175,8 +187,11 @@ export const Main = () => {
                                 <RangePicker className={"mb-4"}
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
+                                    onSelect={(vs) => {
+                                        setTimeRange(vs)
+                                    }}
                                 />
-                                <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                <Table rowKey={'id'} scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
                             </div>
                         </div>
                     </div>
