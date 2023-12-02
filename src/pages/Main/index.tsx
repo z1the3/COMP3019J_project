@@ -180,8 +180,11 @@ export const Main = () => {
                         <RangePicker className={"mb-4"}
                             format='YYYY-MM-DD'
                             placeholder={['start date', 'end date']}
+                            onSelect={(vs) => {
+                                setTimeRange(vs)
+                            }}
                         />
-                        <Table scroll={{ y: 300 }} columns={columns} data={allReservationData} pagination={false} />
+                        <Table scroll={{ y: 300 }} noDataElement={'no data'} columns={columns} data={notBookingReservationData} pagination={false} />
                     </div>
                 </div>}
 
@@ -196,7 +199,7 @@ export const Main = () => {
                                 </div>
                             </div>
                             <div className={' p-8'}>
-                                <Table rowKey={'id'} scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
+                                <Table rowKey={'id'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
                             </div>
                         </div>
                         <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
@@ -214,7 +217,7 @@ export const Main = () => {
                                         setTimeRange(vs)
                                     }}
                                 />
-                                <Table rowKey={'id'} scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
                             </div>
                         </div>
                     </div>
@@ -242,7 +245,7 @@ export const Main = () => {
                                             setTimeRange(vs)
                                         }}
                                     />
-                                    <Table scroll={{ y: 300 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                    <Table scroll={{ y: 300 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
                                 </div>
                             </div>
                         </div>
