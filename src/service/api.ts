@@ -86,9 +86,24 @@ export const postCancelReservation = async (params: { userId: string, reservatio
 
 
 // 销号
-export const deleteAccount = async (params:{userId:string})=>{
+export const deleteAccount = async (params: { userId: string }) => {
     const res = await fetch(`api/reservation/delete`, {
         method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+    })
+    return res
+}
+
+// 用户注册预约
+export const postRegisterReservation = async (params: {
+    reservationId: string,
+    userId: string
+}) => {
+    const res = await fetch(`api/reservation/register`, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },

@@ -2,7 +2,7 @@ import { Button, Divider, Link, Message, Modal, Popconfirm, Table, TimePicker } 
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
-import { deleteAccount, getAllReservation, getUserRegisterReservation, postCancelReservation } from "../../service/api";
+import { deleteAccount, getAllReservation, getUserRegisterReservation, postCancelReservation, postRegisterReservation } from "../../service/api";
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
 import { columns } from "./utils";
 import dayjs from "dayjs";
@@ -135,6 +135,23 @@ export const Main = () => {
         }
 
     }
+
+    // 用户注册预约
+    const postRegisterReservationReq = async (item: any) => {
+        const raw = await postRegisterReservation({ userId: `${state.userId}`, reservationId: `${item.id}` })
+        if (raw.status === 200) {
+            const res = await raw.json()
+            if (res.code === 1) {
+                Message.success("booking successful")
+                navigator('/')
+            } else {
+                Message.error(res.message)
+            }
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+    }
     // for user
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
@@ -164,6 +181,7 @@ export const Main = () => {
                         })
                     }}>details</Link>
                     {isUser && <Link
+                        onClick={() => postRegisterReservationReq(item)}
                     >booking</Link>}
                     {isAdmin && <Link onClick={
                         () => postCancelReservationReq(item)
