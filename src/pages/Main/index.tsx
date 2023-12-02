@@ -1,8 +1,8 @@
-import { Divider, Link, Message, Modal, Table, TimePicker } from "@arco-design/web-react"
+import { Button, Divider, Link, Message, Modal, Popconfirm, Table, TimePicker } from "@arco-design/web-react"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
-import { getAllReservation, getUserRegisterReservation, postCancelReservation } from "../../service/api";
+import { deleteAccount, getAllReservation, getUserRegisterReservation, postCancelReservation } from "../../service/api";
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
 import { columns } from "./utils";
 import dayjs from "dayjs";
@@ -117,6 +117,24 @@ export const Main = () => {
             Message.error(raw.statusText)
         }
     }
+
+    // 销号
+    const deleteAccountReq = async () => {
+        const raw = await deleteAccount({ userId: `${state.userId}` })
+        if (raw.status === 200) {
+            const res = await raw.json()
+            if (res.code === 1) {
+                Message.success("delete successful")
+                navigator('/')
+            } else {
+                Message.error(res.message)
+            }
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+
+    }
     // for user
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
@@ -166,6 +184,29 @@ export const Main = () => {
                 <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}{(isAdmin || isUser) && state.userName}</div>
                 {/* log out button */}
                 <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
+                {/* delete account button */}
+                {
+                    !isGuest &&
+                    <div className={'absolute right-48 top-4 text-xl'}>
+                        <Popconfirm
+                            focusLock
+                            title='Confirm'
+                            content='Are you sure you want to delete?'
+                            onOk={() => {
+                                deleteAccountReq()
+                            }}
+                            onCancel={() => {
+                            }}
+                            okText='Delete'
+                            cancelText='Cancel'
+
+                        >
+                            <Button type='primary' status='danger'>Delete Account</Button>
+                        </Popconfirm>
+                    </div>
+
+                }
+
             </div>
             <div className={'w-screen flex-1 flex justify-center items-center'}>
                 {/* guest table */}
@@ -252,7 +293,6 @@ export const Main = () => {
                     </div>
                 )}
             </div>
-
         </div >
     </>
 }
