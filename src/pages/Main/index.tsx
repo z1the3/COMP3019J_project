@@ -6,6 +6,8 @@ import { deleteAccount, getAllReservation, getUserRegisterReservation, postCance
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
 import { columns } from "./utils";
 import dayjs from "dayjs";
+import { useModeSwitch } from "../../hooks/useModeSwitch";
+import { DarkModeSwitch } from "../../components/DarkModeSwitch";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
@@ -22,7 +24,11 @@ export const Main = () => {
 
     const [timeRange, setTimeRange] = useState<string[]>([])
 
+    // 黑夜模式
+    const { mode, setCurrentMode } = useModeSwitch()
 
+    const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-black', [mode])
+    const textColor = useMemo(() => mode === 'light' ? 'text-black' : 'text-white', [mode])
 
     // 根据所有预约与用户已注册预约，计算出用户未注册预约, 同时根据日期过滤
     const notBookingReservationData = useMemo(() => {
@@ -195,11 +201,11 @@ export const Main = () => {
     return <>
         <div className={'container w-screen h-screen flex flex-col'}>
             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
-            <div className={'w-screen h-16 bg-white flex'}>
+            <div className={`w-screen h-16 flex ${backgroundColor}`}>
                 {/* title */}
-                <div className={'w-screen text-center font-bold text-4xl leading-[4rem]'}>Event Reservation Center</div>
+                <div className={`w-screen text-center font-bold text-4xl leading-[4rem] ${textColor}`}>Event Reservation Center</div>
                 {/* identity */}
-                <div className={'absolute right-8 top-4 text-xl'}>{isGuest && 'guest'}{(isAdmin || isUser) && state.userName}</div>
+                <div className={`absolute right-8 top-4 text-xl ${textColor}`}>{isGuest && 'guest'}{(isAdmin || isUser) && state.userName}</div>
                 {/* log out button */}
                 <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
                 {/* delete account button */}
@@ -224,11 +230,15 @@ export const Main = () => {
                     </div>
 
                 }
+                <div className={'absolute left-5 top-6'}>
+                    <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
+
+                </div>
 
             </div>
             <div className={'w-screen flex-1 flex justify-center items-center'}>
                 {/* guest table */}
-                {isGuest && <div className={'w-5/6 h-5/6 bg-white flex flex-col rounded-3xl'}>
+                {isGuest && <div className={`w-5/6 h-5/6 flex flex-col rounded-3xl ${backgroundColor}`}>
                     <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
                         <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>All Reservation</div>
                         <div className={'w-1/6 mx-auto -my-3'} >
@@ -250,20 +260,20 @@ export const Main = () => {
                 {/* user table */}
                 {isUser && (
                     <div className={'w-screen h-5/6 flex justify-around space-x-3'}>
-                        <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
-                            <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                                <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>My Reservation</div>
+                        <div className={`w-[50rem] h-5/6 ${backgroundColor} flex flex-col rounded-3xl`}>
+                            <div className={'w-full h-24 flex flex-col pt-3'}>
+                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>My Reservation</div>
                                 <div className={'w-1/6 mx-auto -my-3'} >
                                     <Divider />
                                 </div>
                             </div>
                             <div className={' p-8'}>
-                                <Table rowKey={'id'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
+                                <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
                             </div>
                         </div>
-                        <div className={'w-[50rem] h-5/6 bg-white flex flex-col rounded-3xl'}>
-                            <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                                <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>Not Booking Reservation</div>
+                        <div className={`w-[50rem] h-5/6 ${backgroundColor} flex flex-col rounded-3xl`}>
+                            <div className={'w-full h-24 flex flex-col pt-3'}>
+                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>Not Booking Reservation</div>
                                 <div className={'w-1/6 mx-auto -my-3'} >
                                     <Divider />
                                 </div>
