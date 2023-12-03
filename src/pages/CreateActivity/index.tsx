@@ -81,13 +81,27 @@ export const CreateActivity = () => {
                             <div className={'h-full w-full p-8 justify-center'}>
                                 <Form layout="inline" form={form}>
                                     <div className={'flex mb-[48px] w-full'}>
-                                        <FormItem className={'w-1/3'} label='Name' requiredSymbol={false} field='name' rules={[{ required: true }]}>
+                                        <FormItem className={'w-1/3'} label='Name' requiredSymbol={false} field='name' rules={[{
+                                            validator(value, cb) {
+                                                if (!value) {
+                                                    return cb('This field is required');
+                                                }
+                                                return cb();
+                                            },
+                                        }]}>
                                             <Input style={{ width: 350 }} placeholder='please enter the name of the activity' />
                                         </FormItem>
 
-                                        <FormItem className={'w-full ml-[64px]'} onChange={(value) => console.log(value)}
-                                            triggerPropName='checked' label='Date' field='date' requiredSymbol={false} rules={[{ required: true }]}>
-                                            <Button onClick={() => setCalendervibible(true)} >pick date</Button>
+                                        <FormItem className={'w-full ml-[64px]'}
+                                            label='Date' field='date' requiredSymbol={false} rules={[{
+                                                validator(value, cb) {
+                                                    if (!pickDates.length) {
+                                                        return cb('This field is required');
+                                                    }
+                                                    return cb();
+                                                },
+                                            }]}>
+                                            <Button onClick={() => setCalendervibible(true)} >select date</Button>
                                             <div style={{
                                                 width: 800, position: 'absolute',
                                                 background: mode === 'light' ? 'white' : 'black', left: calenderVisible ? -100 : -10000, top: -240, zIndex: 10000
@@ -122,24 +136,51 @@ export const CreateActivity = () => {
                                     <ConfigProvider locale={enUS}>
 
                                         <div className={'flex justify-between mb-[48px] w-full'}>
-                                            <FormItem className={'w-1/3'} label='Start time' requiredSymbol={false} field='startTimeLimit' rules={[{ required: true }]}>
+                                            <FormItem className={'w-1/3'} label='Start time' requiredSymbol={false} field='startTimeLimit' rules={[{
+                                                validator(value, cb) {
+                                                    if (!value) {
+                                                        return cb('This field is required');
+                                                    }
+                                                    return cb();
+                                                },
+                                            }]}>
                                                 <TimePicker format='HH:mm' style={{ width: 325 }} placeholder={"please pick time"} />
                                             </FormItem>
-                                            <FormItem className={'w-1/3'} label='End time' requiredSymbol={false} field='endTimeLimit' rules={[{ required: true }]}>
+                                            <FormItem className={'w-1/3'} label='End time' requiredSymbol={false} field='endTimeLimit' rules={[{
+                                                validator(value, cb) {
+                                                    if (!value) {
+                                                        return cb('This field is required');
+                                                    }
+                                                    return cb();
+                                                },
+                                            }]}>
                                                 <TimePicker format='HH:mm' style={{ width: 350 }} placeholder={"please pick time"} />
                                             </FormItem>
                                         </div>
                                     </ConfigProvider>
 
                                     <div className={'flex justify-between w-1/3'}>
-                                        <FormItem className={'w-1/3'} label='Description' requiredSymbol={false} field='description' rules={[{ required: true }]}>
+                                        <FormItem className={'w-1/3'} label='Description' requiredSymbol={false} field='description' rules={[{
+                                            validator(value, cb) {
+                                                if (!value) {
+                                                    return cb('This field is required');
+                                                }
+                                                return cb();
+                                            },
+                                        }]}>
                                             <TextArea placeholder='Please enter the description' style={{ width: 850, height: 150 }} />
                                         </FormItem>
                                     </div>
                                     <div className={'flex justify-between mt-[178px] w-1/3'}>
                                         <Button onClick={() => navigator('/main', { state: { userId: state.userId, auth: state.auth, userName: state.userName } })}>Back to menu</Button>
-                                        <Button type='primary' onClick={() => {
-                                            postCreateReservationReq()
+                                        <Button type='primary' onClick={async () => {
+                                            try {
+                                                await form.validate();
+                                                postCreateReservationReq()
+
+                                            } catch (e) {
+                                                Message.error('Some infomation is required');
+                                            }
                                         }}>Create</Button>
 
                                     </div>
@@ -149,8 +190,8 @@ export const CreateActivity = () => {
                         </div>
                     </div>
                 </div>
-                )
-            </div>
+
+            </div >
 
         </div ></>
 }
