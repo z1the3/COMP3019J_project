@@ -6,6 +6,7 @@ export const DarkModeSwitch = (params: { mode: string, setCurrentMode: any }) =>
         <div>
             <span style={{ 'color': mode === 'light' ? 'black' : 'white' }}>Dark Mode</span>
             <Switch
+                defaultChecked={!(mode === 'light')}
                 onChange={(val) => {
                     setCurrentMode(!!val ? 'dark' : 'light')
                 }}
