@@ -2,12 +2,12 @@ import { Button, Divider, Link, Message, Modal, Popconfirm, Table, TimePicker } 
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
-import { deleteAccount, getAllReservation, getUserRegisterReservation, postCancelReservation, postRegisterReservation } from "../../service/api";
+import { deleteAccount, getAllReservation, getUserRegisterReservation, postAdminCancelReservation, postCancelReservation, postRegisterReservation } from "../../service/api";
 import { ColumnProps } from "@arco-design/web-react/es/Table/interface";
-import { columns } from "./utils";
 import dayjs from "dayjs";
 import { useModeSwitch } from "../../hooks/useModeSwitch";
 import { DarkModeSwitch } from "../../components/DarkModeSwitch";
+import { columns } from "./utils";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
@@ -111,9 +111,10 @@ export const Main = () => {
         const raw = await postCancelReservation({ userId: `${state.userId}`, reservationId: `${item.id}` })
         if (raw.status === 200) {
             const res = await raw.json()
-            if (res.code === 1) {
+            if (res.code === 0) {
                 Message.success("cancel successful")
                 getAllReservationReq()
+                getUserRegisterReservationReq()
                 setAllReservationData([...allReservationData])
             } else {
                 Message.error(res.message)
@@ -124,6 +125,24 @@ export const Main = () => {
         }
     }
 
+    // 管理员删除预约
+    const postAdminCancelReservationReq = async (item: any) => {
+        const raw = await postAdminCancelReservation({ reservationId: `${item.id}` })
+        if (raw.status === 200) {
+            const res = await raw.json()
+            if (res.code === 0) {
+                Message.success("cancel successful")
+                getAllReservationReq()
+                getUserRegisterReservationReq()
+                setAllReservationData([...allReservationData])
+            } else {
+                Message.error(res.message)
+            }
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+    }
     // 销号
     const deleteAccountReq = async () => {
         const raw = await deleteAccount({ userId: `${state.userId}` })
@@ -147,9 +166,11 @@ export const Main = () => {
         const raw = await postRegisterReservation({ userId: `${state.userId}`, reservationId: `${item.id}` })
         if (raw.status === 200) {
             const res = await raw.json()
-            if (res.code === 1) {
+            if (res.code === 0) {
                 Message.success("booking successful")
-                navigator('/')
+                navigator('/main', { state: state })
+                getUserRegisterReservationReq()
+                getAllReservationReq()
             } else {
                 Message.error(res.message)
             }
@@ -158,14 +179,53 @@ export const Main = () => {
             Message.error(raw.statusText)
         }
     }
-    // for user
+    // for user all reservation
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
         dataIndex: 'name',
     },
     {
         title: 'Service Providers',
-        dataIndex: 'userId',
+        dataIndex: 'provider',
+    },
+    {
+        title: 'Start Time',
+        dataIndex: 'startTimeLimit',
+    },
+    {
+        title: 'End Time',
+        dataIndex: 'endTimeLimit',
+    }, {
+        title: 'Operation',
+        fixed: 'right',
+        width: 180,
+        render: (col, item: any) => {
+            return (
+                <div className="flex">
+                    <Link onClick={() => {
+                        navigator('/reservationDetail', {
+                            state: Object.assign(item as Record<string, string>, { userId: state.userId, auth: state.auth, userName: state.userName, userNames: item.usernames })
+                        })
+                    }}>details</Link>
+                    {isUser && <Link
+                        onClick={() => postRegisterReservationReq(item)}
+                    >booking</Link>}
+                    {isAdmin && <Link onClick={
+                        () => postAdminCancelReservationReq(item)
+                    }>delete</Link>}
+
+                </div>)
+        }
+
+    }]
+    // for user current reservation
+    const userCurrentColumns: ColumnProps<unknown>[] = [{
+        title: 'Name',
+        dataIndex: 'name',
+    },
+    {
+        title: 'Service Providers',
+        dataIndex: 'provider',
     },
     {
         title: 'Start Time',
@@ -183,13 +243,10 @@ export const Main = () => {
                 <div className="flex">
                     <Link onClick={() => {
                         navigator('/reservationDetail', {
-                            state: Object.assign(item as Record<string, string>, { userId: state.userId, auth: state.auth, userName: state.userName })
+                            state: Object.assign(item as Record<string, string>, { userId: state.userId, auth: state.auth, userName: state.userName, current: true })
                         })
                     }}>details</Link>
-                    {isUser && <Link
-                        onClick={() => postRegisterReservationReq(item)}
-                    >booking</Link>}
-                    {isAdmin && <Link onClick={
+                    {<Link onClick={
                         () => postCancelReservationReq(item)
                     }>cancel</Link>}
 
@@ -240,7 +297,7 @@ export const Main = () => {
                 {/* guest table */}
                 {isGuest && <div className={`w-5/6 h-5/6 flex flex-col rounded-3xl ${backgroundColor}`}>
                     <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                        <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>All Reservation</div>
+                        <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All Reservation</div>
                         <div className={'w-1/6 mx-auto -my-3'} >
                             <Divider />
                         </div>
@@ -268,7 +325,7 @@ export const Main = () => {
                                 </div>
                             </div>
                             <div className={' p-8'}>
-                                <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={userReservationData} pagination={false} />
+                                <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userCurrentColumns} data={userReservationData} pagination={false} />
                             </div>
                         </div>
                         <div className={`w-[50rem] h-5/6 ${backgroundColor} flex flex-col rounded-3xl`}>
@@ -294,16 +351,18 @@ export const Main = () => {
                 {/* admin table */}
                 {isAdmin && (
                     <div className={'w-screen h-full flex '}>
-                        <div className={'w-1/6 h-full bg-blue-700 flex flex-col'}>
-                            <div className={'h-16'}>activity list</div>
+                        <div className={'w-2/6 h-full bg-blue-300 flex flex-col'}>
+                            <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/main', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>+ Activity List</Link>
                             <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/createActivity', {
                                 state: { userId: state.userId, auth: state.auth, userName: state.userName }
                             })}>+ Create Activity</Link>
                         </div>
                         <div className={'w-full p-24'}>
-                            <div className={'w-full h-5/6 bg-white flex flex-col rounded-3xl'}>
+                            <div className={`w-full h-5/6 flex flex-col rounded-3xl ${backgroundColor}`}>
                                 <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                                    <div className={'w-full text-center font-bold text-2xl leading-[2rem]'}>All Reservation</div>
+                                    <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All Reservation</div>
                                     <div className={'w-1/6 mx-auto -my-3'} >
                                         <Divider />
                                     </div>

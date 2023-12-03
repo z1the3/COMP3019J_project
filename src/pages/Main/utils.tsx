@@ -11,7 +11,7 @@ export const columns: ColumnProps<unknown>[] = [
     },
     {
         title: 'Service Providers',
-        dataIndex: 'userId',
+        dataIndex: 'provider',
     },
     {
         title: 'Start Time',
