@@ -296,7 +296,9 @@ export const Main = () => {
                     <div className={'w-screen h-full flex '}>
                         <div className={'w-1/6 h-full bg-blue-700 flex flex-col'}>
                             <div className={'h-16'}>activity list</div>
-                            <div className={'h-16'}>create activity</div>
+                            <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/createActivity', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>+ Create Activity</Link>
                         </div>
                         <div className={'w-full p-24'}>
                             <div className={'w-full h-5/6 bg-white flex flex-col rounded-3xl'}>
@@ -314,7 +316,7 @@ export const Main = () => {
                                             setTimeRange(vs)
                                         }}
                                     />
-                                    <Table scroll={{ y: 300 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                    <Table scroll={{ y: 230 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
                                 </div>
                             </div>
                         </div>

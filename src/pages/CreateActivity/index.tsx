@@ -1,8 +1,9 @@
-import { Button, Calendar, Checkbox, DatePicker, Divider, Form, Input, Link, Table, TimePicker } from "@arco-design/web-react"
+import { Button, Calendar, Checkbox, DatePicker, Divider, Form, Input, Link, Message, Table, TimePicker } from "@arco-design/web-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import "@arco-design/web-react/dist/css/arco.css";
 import { useRef, useState } from "react";
 import * as dayjs from 'dayjs'
+import { postCreateReservation } from "../../service/api";
 
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
@@ -14,6 +15,28 @@ export const CreateActivity = () => {
     const [form] = Form.useForm();
     const [calenderVisible, setCalendervibible] = useState<boolean>(false)
     const [pickDates, setPickDates] = useState<string[]>([])
+
+
+
+    const postCreateReservationReq = async () => {
+        const param = form.getFields()
+        param.date = pickDates
+        param.userId = state.userId
+        const raw = await postCreateReservation(param as any)
+        if (raw.status === 200) {
+            const res = await raw.json()
+            if (res.code === 1) {
+                Message.success("create successful")
+                navigator('/main', { state: { userId: state.userId, auth: state.auth, userName: state.userName } })
+            } else {
+                Message.error(res.message)
+            }
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+
+    }
     return <>
         <div className={'container w-screen h-screen flex flex-col'}>
             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
@@ -21,7 +44,7 @@ export const CreateActivity = () => {
                 {/* title */}
                 <div className={'w-screen text-center font-bold text-4xl leading-[4rem]'}>Event Reservation Center</div>
                 {/* identity */}
-                <div className={'absolute right-8 top-4 text-xl'}>{state.name}</div>
+                <div className={'absolute right-8 top-4 text-xl'}>{state.userName}</div>
                 {/* log out button */}
                 <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
             </div>
@@ -54,35 +77,33 @@ export const CreateActivity = () => {
                                         <FormItem className={'w-full ml-[64px]'} onChange={(value) => console.log(value)}
                                             triggerPropName='checked' label='Date' field='date' requiredSymbol={false} rules={[{ required: true }]}>
                                             <Button onClick={() => setCalendervibible(true)} >pick date</Button>
-                                            <Calendar
-                                                headerRender={(props) => {
-                                                    return <>
-                                                        <Button className={'mt-3'} onClick={() => setCalendervibible(false)}>Complete</Button>
-                                                    </>
-                                                }}
-                                                style={{
-                                                    width: 400, position: 'absolute',
-                                                    background: 'white', left: calenderVisible ? -100 : -10000, top: -200, zIndex: 10000
-                                                }}
-                                                headerType="button"
-                                                dateRender={(current) => {
-                                                    return (
-                                                        <div>
-                                                            <Checkbox style={{ display: 'absolute', zIndex: 10000 }} onChange={(v) => {
-                                                                const selectedDate = current.date().toString()
-                                                                if (v) {
-                                                                    setPickDates([...pickDates, selectedDate])
-                                                                } else {
-                                                                    setPickDates([...(pickDates.filter(d => d !== selectedDate))])
-                                                                }
+                                            <div style={{
+                                                width: 400, position: 'absolute',
+                                                background: 'white', left: calenderVisible ? -100 : -10000, top: -200, zIndex: 10000
+                                            }}>
+                                                <Button className={'mt-3'} onClick={() => setCalendervibible(false)}>Complete</Button>
+                                                <Calendar
+                                                    headerType='button'
+                                                    panelTodayBtn={false}
+                                                    dateRender={(current) => {
+                                                        return (
+                                                            <div>
+                                                                <Checkbox style={{ display: 'absolute', zIndex: 10000 }} onChange={(v) => {
+                                                                    const selectedDate = current.format('YYYY/MM/DD')
+                                                                    if (v) {
+                                                                        setPickDates([...pickDates, selectedDate])
+                                                                    } else {
+                                                                        setPickDates([...(pickDates.filter(d => d !== selectedDate))])
+                                                                    }
+                                                                    console.log(pickDates)
+                                                                }}>
+                                                                    {current.date()}
+                                                                </Checkbox>
+                                                            </div>
+                                                        );
+                                                    }} />
+                                            </div>
 
-                                                            }}>
-                                                                {current.date()}
-
-                                                            </Checkbox>
-                                                        </div>
-                                                    );
-                                                }} />
                                         </FormItem>
                                     </div>
                                     <div className={'flex justify-between mb-[48px] w-full'}>
@@ -101,9 +122,7 @@ export const CreateActivity = () => {
                                     <div className={'flex justify-between mt-[178px] w-1/3'}>
                                         <Button>Back to menu</Button>
                                         <Button type='primary' onClick={() => {
-                                            console.log(form.getFields())
-                                            console.log(dayjs().month())
-                                            console.log(pickDates)
+                                            postCreateReservationReq()
                                         }}>Create</Button>
 
                                     </div>

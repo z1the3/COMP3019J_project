@@ -23,7 +23,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" Component={Login} />
-          {/* <Route path="/" Component={CreateActivity} /> */}
+          <Route path="/createActivity" Component={CreateActivity} />
 
           <Route path="/register" Component={Register} />
           <Route path="/main" Component={Main} />
