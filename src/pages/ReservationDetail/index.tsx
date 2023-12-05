@@ -10,7 +10,8 @@ export const ReservationDetail = () => {
     // 黑夜模式
     const { mode, setCurrentMode } = useModeSwitch()
 
-    const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-black', [mode])
+    const bgColor = useMemo(() => mode === 'light' ? '#DCECFB' : '#000000', [mode])
+    const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-gray-800', [mode])
     const textColor = useMemo(() => mode === 'light' ? 'text-black' : 'text-white', [mode])
     // Hooks for route jumps
     const navigator = useNavigate()
@@ -53,7 +54,9 @@ export const ReservationDetail = () => {
             Message.error(raw.statusText)
         }
     }
-    return <div className={'container w-screen h-screen flex flex-col'}>
+    return <>
+    <div style={{ backgroundColor: bgColor }}>
+    <div className={'container w-screen h-screen flex flex-col'}>
         {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
         <div className={`w-screen h-16 ${backgroundColor} flex`}>
             {/* title */}
@@ -99,6 +102,6 @@ export const ReservationDetail = () => {
                 </div>
             </div>
         </div>
-
-    </div >
+        </div>
+    </div ></>
 }

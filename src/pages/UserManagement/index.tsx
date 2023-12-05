@@ -1,4 +1,4 @@
-import { Form, Input, Link, Message, Modal, Popconfirm, Select, Table } from "@arco-design/web-react"
+import { Divider, Form, Input, Link, Message, Modal, Popconfirm, Select, Table } from "@arco-design/web-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import "@arco-design/web-react/dist/css/arco.css";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -26,7 +26,8 @@ export const UserManagement = () => {
       });
     
 
-    const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-black', [mode])
+    const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-gray-800', [mode])
+    const bgColor = useMemo(() => mode === 'light' ? '#DCECFB' : '#000000', [mode])
     const columnColor = useMemo(() => mode === 'light' ? '#E8EEFC' : '#5D616A', [mode])
     const textColor = useMemo(() => mode === 'light' ? 'text-black' : 'text-white', [mode])
 
@@ -157,6 +158,7 @@ export const UserManagement = () => {
         }
       }
     return <>
+    <div style={{ backgroundColor: bgColor }}>
         <div className={'container w-screen h-screen flex flex-col'}>
             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
             <div className={`w-screen h-16 ${backgroundColor} flex`}>
@@ -174,20 +176,41 @@ export const UserManagement = () => {
             <div className={'w-screen flex-1 flex justify-center items-center'}>
                 <div className={'w-screen h-full flex '}>
                     {/* 侧边栏 */}
-                    <div className={'w-1/6 h-full bg-blue-400 flex flex-col'}>
-                        <Link className={' h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/main', {
+                    <div className={'w-2/6 h-full bg-indigo-800 flex flex-col'}>
+                        <Link className={' h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/main', {
                             state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>+ Activity List</Link>
-                        <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/createActivity', {
+                        })}>
+                            <div className="flex items-center">
+                                <img src="/src/assets/menu.png" alt="Icon" className="mr-2" />
+                                Activity List
+                            </div>
+                            </Link>
+                        <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/createActivity', {
                             state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>+ Create Activity</Link>
-                        <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/userManagement', {
+                        })}>
+                            <div className="flex items-center">
+                                <img src="/src/assets/plus-circle.png" alt="Icon" className="mr-2" />
+                                Create Activity
+                            </div>
+                        </Link>
+                        <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/userManagement', {
                                 state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>+ User Management</Link>
+                        })}>
+                            <div className="flex items-center">
+                                <img src="/src/assets/user.png" alt="Icon" className="mr-2" />
+                                User Management
+                            </div>
+                        </Link>
                     </div>
-                    <div className={'w-full p-5'}>
-                        <div className={'h-full w-full p-8 justify-center '}>
-                            <Table scroll={{ y: 230 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={allUserData} pagination={false} />
+                    <div className={'w-full h-full p-8'}>
+                        <div className={`w-full h-full flex flex-col rounded-2xl ${backgroundColor}`}>
+                            <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
+                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All User</div>
+                                <Divider />
+                            </div>
+                            <div className={'h-full w-full p-8 justify-center '}>
+                                <Table scroll={{ y: 380 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={allUserData} pagination={false} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,18 +225,19 @@ export const UserManagement = () => {
                <Form
                     form={form}
                     labelCol={{
-                        style: { flexBasis: 90 },
+                        style: { flexBasis: 90 , textAlign: 'center'},
                     }}
                     wrapperCol={{
-                        style: { flexBasis: 'calc(100% - 90px)' },
+                        style: { flexBasis: 'calc(100% - 90px)'},
                     }}>
-                    <FormItem label='Name' field='name' rules={[{ required: true }]}>
+                    <FormItem label='Name:' field='name' rules={[{ required: true }]}>
                         <Input placeholder='' />
                     </FormItem>
-                    <FormItem label='State' required field='state' rules={[{ required: true }]}>
+                    <FormItem label='State:' required field='state' rules={[{ required: true }]}>
                         <Select options={['Normal', 'Ban']} />
                     </FormItem>
                 </Form>
             </Modal>
-        </div ></>
+        </div >
+        </div></>
 }
