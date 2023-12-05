@@ -98,16 +98,24 @@ def create_user_router():
             data = request.get_json()
             user_id = data['userId']
 
-            # 删除与用户相关的所有 registration_date 和 registration 记录
+            # 删除与用户相关的所有 registration 记录
             registrations = Registration.query.filter_by(userId=user_id).all()
             for reg in registrations:
                 RegistrationDate.query.filter_by(registration_id=reg.id).delete()
                 db.session.delete(reg)
 
-            # 删除与用户相关的所有 reservation_date 和 reservation 记录
+            db.session.commit()
+
+            # 删除与用户相关的所有 reservation 记录
             reservations = Reservation.query.filter_by(userId=user_id).all()
             for res in reservations:
+                # 首先删除所有相关的 registration 记录
+                Registration.query.filter_by(reservation_id=res.id).delete()
+
+                # 接着删除所有相关的 reservation_date 记录
                 ReservationDate.query.filter_by(reservation_id=res.id).delete()
+
+                # 最后删除 reservation 记录本身
                 db.session.delete(res)
 
             # 删除用户账户
