@@ -84,7 +84,6 @@ export const Main = () => {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.reservations.map((item) => ({ ...item, key: item.id }))
             setAllReservationData(res.reservations)
-
         } else {
             // request failure
             Message.error(raw.statusText)
@@ -158,7 +157,6 @@ export const Main = () => {
             // request failure
             Message.error(raw.statusText)
         }
-
     }
 
     // 用户注册预约
@@ -358,6 +356,9 @@ export const Main = () => {
                             <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/createActivity', {
                                 state: { userId: state.userId, auth: state.auth, userName: state.userName }
                             })}>+ Create Activity</Link>
+                            <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/userManagement', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>+ User Management</Link>
                         </div>
                         <div className={'w-full p-24'}>
                             <div className={`w-full h-5/6 flex flex-col rounded-3xl ${backgroundColor}`}>

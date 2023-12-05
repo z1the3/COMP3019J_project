@@ -40,6 +40,16 @@ export const getAllReservation = async (): Promise<Response> => {
     return res
 }
 
+export const getAllUser = async (): Promise<Response> => {
+    const res = await fetch('api/user/all', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    return res
+}
+
 // 管理员创建预约
 export const postCreateReservation = async (params: {
     date: string[];
@@ -98,8 +108,20 @@ export const postAdminCancelReservation = async (params: { reservationId: string
 
 // 销号
 export const deleteAccount = async (params: { userId: string }) => {
-    const res = await fetch(`api/reservation/delete`, {
+    const res = await fetch(`api/user/delete`, {
         method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+    })
+    return res
+}
+
+// 编辑用户
+export const editUser = async (params: { userId: string, name: string, state:string }) => {
+    const res = await fetch(`api/user/edit`,{
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },

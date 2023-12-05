@@ -71,6 +71,9 @@ export const CreateActivity = () => {
                         <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/createActivity', {
                             state: { userId: state.userId, auth: state.auth, userName: state.userName }
                         })}>+ Create Activity</Link>
+                        <Link className={'h-12 text-center font-bold text-2xl leading-[2rem] text-black'} onClick={() => navigator('/userManagement', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                        })}>+ User Management</Link>
                     </div>
                     <div className={'w-full h-full p-8'}>
                         <div className={`w-full h-5/6 ${backgroundColor} flex flex-col rounded-2xl`}>

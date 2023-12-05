@@ -145,7 +145,7 @@ def create_user_router():
                 user_info = {
                     'userId': user.userId,
                     'name': user.name,
-                    'state': user.state
+                    'state': get_state_description(user.state)
                 }
                 user_infos.append(user_info)
 
@@ -155,6 +155,16 @@ def create_user_router():
         except Exception as e:
             logger.error(f"Error in retrieving all non-admin user information: {e}")
             return jsonify({'code': 1, 'message': str(e)}), 500
+        
+    def get_state_description(state):
+    # 根据 state 的值定义真实状态描述
+        if state == 1:
+            return "Normal"
+        elif state == 0:
+            return "Ban"
+        # 可以根据需要添加更多的状态描述
+        else:
+            return "Unknown"
 
     # 编辑用户（名称, 状态）
     @user_bp.route('/user/edit', methods=['POST'])
@@ -167,11 +177,12 @@ def create_user_router():
 
             # 查找用户
             user = User.query.filter_by(userId=user_id).first()
+            converted_state = 1 if new_state == 'Normal' else 0
 
             if user:
                 # 更新用户信息
                 user.name = new_name
-                user.state = new_state
+                user.state = converted_state
                 db.session.commit()
                 logger.info(f"User {user_id} information updated successfully.")
                 return jsonify({'code': 0})  # 0 表示成功
