@@ -1,7 +1,7 @@
 import { Button, Divider, Form, Input, Link, Message, Space, Switch } from "@arco-design/web-react"
 import "@arco-design/web-react/dist/css/arco.css";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { postUserLogin } from "../../service/api";
 const FormItem = Form.Item;
 import backgroundImage from "../../assets/background.png"
@@ -23,10 +23,7 @@ export const Login = () => {
     // Maintained Forms
     const [form] = Form.useForm();
     // background style
-    const background = {
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-    }
+    const background = useMemo(() => mode === 'light' ? {backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover'} : { backgroundColor: '#434343'}, [mode])
 
 
     const handleInput = (v: Record<string, string>) => {
@@ -116,7 +113,6 @@ export const Login = () => {
                         <div className={'flex justify-between items-center'}>
                             <Link onClick={() => navigator('/register')}>Register</Link>
                             <Link style={{ color: '#FF7D00' }} onClick={() => setIdentity((cur) => identities.filter((i) => i !== cur)[0])}>Switch User/Administor</Link>
-
                         </div>
                         <div className={'flex justify-center items-center m-5'}>
                             <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
