@@ -1,4 +1,4 @@
-import { Button, Divider, Link, Message, Modal, Popconfirm, Table, TimePicker } from "@arco-design/web-react"
+import { Button, ConfigProvider, Divider, Link, Message, Modal, Popconfirm, Table, TimePicker } from "@arco-design/web-react"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { DatePicker } from '@arco-design/web-react';
@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { useModeSwitch } from "../../hooks/useModeSwitch";
 import { DarkModeSwitch } from "../../components/DarkModeSwitch";
 import { columns } from "./utils";
+import enUS from "@arco-design/web-react/es/locale/en-US";
 const { RangePicker } = DatePicker;
 
 export const Main = () => {
@@ -150,7 +151,7 @@ export const Main = () => {
         const raw = await deleteAccount({ userId: `${state.userId}` })
         if (raw.status === 200) {
             const res = await raw.json()
-            if (res.code === 1) {
+            if (res.code === 0) {
                 Message.success("delete successful")
                 navigator('/')
             } else {
@@ -227,8 +228,8 @@ export const Main = () => {
                         onClick={() => postRegisterReservationReq(item)}
                         style={{ color: bookingColor }}
                     >booking</Link>}
-                    {isAdmin && <Link 
-                        className="text-red-500" 
+                    {isAdmin && <Link
+                        className="text-red-500"
                         onClick={
                             () => postAdminCancelReservationReq(item)
                         }>delete</Link>}
@@ -289,86 +290,55 @@ export const Main = () => {
     }]
     // The dynamic HTML structure is organized in the form of jsx/tsx because we use React.js
     return <>
-    <div style={{ backgroundColor: bgColor }}>
-        <div className={'container w-screen h-screen flex flex-col'}>
-            {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
-            <div className={`w-screen h-16 flex ${backgroundColor}`}>
-                {/* title */}
-                <div className={`w-screen text-center font-bold text-4xl leading-[4rem] ${textColor}`}>Event Reservation Center</div>
-                {/* identity */}
-                <div className={`absolute right-8 top-4 text-xl ${textColor}`}>{isGuest && 'guest'}{(isAdmin || isUser) && state.userName}</div>
-                {/* log out button */}
-                <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
-                {/* delete account button */}
-                {
-                    !isGuest &&
-                    <div className={'absolute right-48 top-4 text-xl'}>
-                        <Popconfirm
-                            focusLock
-                            title='Confirm'
-                            content='Are you sure you want to delete?'
-                            onOk={() => {
-                                deleteAccountReq()
-                            }}
-                            onCancel={() => {
-                            }}
-                            okText='Delete'
-                            cancelText='Cancel'
+        <ConfigProvider locale={enUS}>
 
-                        >
-                            <Button type='primary' status='danger'>Delete Account</Button>
-                        </Popconfirm>
-                    </div>
+            <div style={{ backgroundColor: bgColor }}>
+                <div className={'container w-screen h-screen flex flex-col'}>
+                    {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
+                    <div className={`w-screen h-16 flex ${backgroundColor}`}>
+                        {/* title */}
+                        <div className={`w-screen text-center font-bold text-4xl leading-[4rem] ${textColor}`}>Event Reservation Center</div>
+                        {/* identity */}
+                        <div className={`absolute right-8 top-4 text-xl ${textColor}`}>{isGuest && 'guest'}{(isAdmin || isUser) && state.userName}</div>
+                        {/* log out button */}
+                        <Link onClick={() => navigator('/')} className={'absolute right-36 top-4 text-xl'}>log out </Link>
+                        {/* delete account button */}
+                        {
+                            !isGuest &&
+                            <div className={'absolute right-64 top-4 text-xl'}>
+                                <Popconfirm
+                                    focusLock
+                                    title='Confirm'
+                                    content='Are you sure you want to delete?'
+                                    onOk={() => {
+                                        deleteAccountReq()
+                                    }}
+                                    onCancel={() => {
+                                    }}
+                                    okText='Delete'
+                                    cancelText='Cancel'
 
-                }
-                <div className={'absolute left-5 top-6'}>
-                    <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
-                </div>
+                                >
+                                    <Button type='primary' status='danger'>Delete Account</Button>
+                                </Popconfirm>
+                            </div>
 
-            </div>
-            <div className={'w-screen flex-1 flex justify-center items-center'}>
-                {/* guest table */}
-                {isGuest && <div className={`w-5/6 h-5/6 flex flex-col rounded-3xl ${backgroundColor}`}>
-                    <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                        <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All Reservation</div>
-                        <div className={'w-1/6 mx-auto -my-3'} >
-                            <Divider />
+                        }
+                        <div className={'absolute left-5 top-6'}>
+                            <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
                         </div>
-                    </div>
-                    <div className={'h-full p-8'}>
-                        <RangePicker className={"mb-4"}
-                            format='YYYY-MM-DD'
-                            placeholder={['start date', 'end date']}
-                            onSelect={(vs) => {
-                                setTimeRange(vs)
-                            }}
-                        />
-                        <Table scroll={{ y: 300 }} noDataElement={'no data'} columns={columns} data={notBookingReservationData} pagination={false} />
-                    </div>
-                </div>}
 
-                {/* user table */}
-                {isUser && (
-                    <div className={'w-screen h-5/6 flex justify-around space-x-3'}>
-                        <div className={`w-[50rem] h-full ${backgroundColor} flex flex-col rounded-3xl`}>
-                            <div className={'w-full h-24 flex flex-col pt-3'}>
-                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>My Reservation</div>
+                    </div>
+                    <div className={'w-screen flex-1 flex justify-center items-center'}>
+                        {/* guest table */}
+                        {isGuest && <div className={`w-5/6 h-5/6 flex flex-col rounded-3xl ${backgroundColor}`}>
+                            <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
+                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All Reservation</div>
                                 <div className={'w-1/6 mx-auto -my-3'} >
                                     <Divider />
                                 </div>
                             </div>
-                            <div className={' p-8'}>
-                                <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userCurrentColumns} data={userReservationData} pagination={false} />
-                            </div>
-                        </div>
-                        <div className={`w-[50rem] h-full ${backgroundColor} flex flex-col rounded-3xl`}>
-                            <div className={'w-full h-24 flex flex-col pt-3'}>
-                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>Not Booking Reservation</div>
-                                <div className={'w-1/6 mx-auto -my-3'} >
-                                    <Divider />
-                                </div>
-                            </div>
-                            <div className={' p-8'}>
+                            <div className={'h-full p-8'}>
                                 <RangePicker className={"mb-4"}
                                     format='YYYY-MM-DD'
                                     placeholder={['start date', 'end date']}
@@ -376,64 +346,99 @@ export const Main = () => {
                                         setTimeRange(vs)
                                     }}
                                 />
-                                <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                <Table scroll={{ y: 300 }} noDataElement={'no data'} columns={columns} data={notBookingReservationData} pagination={false} />
                             </div>
-                        </div>
-                    </div>
-                )}
-                {/* admin table */}
-                {isAdmin && (
-                    <div className={'w-screen h-full flex '}>
-                        <div className={'w-2/6 h-full bg-indigo-800 flex flex-col'}>
-                        <Link className={' h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/main', {
-                            state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>
-                            <div className="flex items-center">
-                                <img src="/src/assets/menu.png" alt="Icon" className="mr-2" />
-                                Activity List
-                            </div>
-                            </Link>
-                        <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/createActivity', {
-                            state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>
-                            <div className="flex items-center">
-                                <img src="/src/assets/plus-circle.png" alt="Icon" className="mr-2" />
-                                Create Activity
-                            </div>
-                        </Link>
-                        <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/userManagement', {
-                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>
-                            <div className="flex items-center">
-                                <img src="/src/assets/user.png" alt="Icon" className="mr-2" />
-                                User Management
-                            </div>
-                        </Link>
-                    </div>
-                        <div className={'w-full p-24'}>
-                            <div className={`w-full h-full flex flex-col rounded-3xl ${backgroundColor}`}>
-                                <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                                    <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All Reservation</div>
-                                    <div className={'w-1/6 mx-auto -my-3'} >
-                                        <Divider />
+                        </div>}
+
+                        {/* user table */}
+                        {isUser && (
+                            <div className={'w-screen h-5/6 flex justify-around space-x-3'}>
+                                <div className={`w-[50rem] h-full ${backgroundColor} flex flex-col rounded-3xl`}>
+                                    <div className={'w-full h-24 flex flex-col pt-3'}>
+                                        <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>My Reservation</div>
+                                        <div className={'w-1/6 mx-auto -my-3'} >
+                                            <Divider />
+                                        </div>
+                                    </div>
+                                    <div className={' p-8'}>
+                                        <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userCurrentColumns} data={userReservationData} pagination={false} />
                                     </div>
                                 </div>
-                                <div className={'h-full w-full p-8 justify-center '}>
-                                    <RangePicker className={"mb-4"}
-                                        format='YYYY-MM-DD'
-                                        placeholder={['start date', 'end date']}
-                                        onSelect={(vs) => {
-                                            setTimeRange(vs)
-                                        }}
-                                    />
-                                    <Table scroll={{ y: 230 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                <div className={`w-[50rem] h-full ${backgroundColor} flex flex-col rounded-3xl`}>
+                                    <div className={'w-full h-24 flex flex-col pt-3'}>
+                                        <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>Not Booking Reservation</div>
+                                        <div className={'w-1/6 mx-auto -my-3'} >
+                                            <Divider />
+                                        </div>
+                                    </div>
+                                    <div className={' p-8'}>
+                                        <RangePicker className={"mb-4"}
+                                            format='YYYY-MM-DD'
+                                            placeholder={['start date', 'end date']}
+                                            onSelect={(vs) => {
+                                                setTimeRange(vs)
+                                            }}
+                                        />
+                                        <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
+                        {/* admin table */}
+                        {isAdmin && (
+                            <div className={'w-screen h-full flex '}>
+                                <div className={'w-2/6 h-full bg-indigo-800 flex flex-col'}>
+                                    <Link className={' h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/main', {
+                                        state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                                    })}>
+                                        <div className="flex items-center">
+                                            <img src="/src/assets/menu.png" alt="Icon" className="mr-2" />
+                                            Activity List
+                                        </div>
+                                    </Link>
+                                    <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/createActivity', {
+                                        state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                                    })}>
+                                        <div className="flex items-center">
+                                            <img src="/src/assets/plus-circle.png" alt="Icon" className="mr-2" />
+                                            Create Activity
+                                        </div>
+                                    </Link>
+                                    <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/userManagement', {
+                                        state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                                    })}>
+                                        <div className="flex items-center">
+                                            <img src="/src/assets/user.png" alt="Icon" className="mr-2" />
+                                            User Management
+                                        </div>
+                                    </Link>
+                                </div>
+                                <div className={'w-full p-8'}>
+                                    <div className={`w-full h-full flex flex-col rounded-3xl ${backgroundColor}`}>
+                                        <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
+                                            <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All Reservation</div>
+                                            <div className={'w-1/6 mx-auto -my-3'} >
+                                                <Divider />
+                                            </div>
+                                        </div>
+                                        <div className={'h-full w-full p-8 justify-center '}>
+                                            <RangePicker className={"mb-4"}
+                                                format='YYYY-MM-DD'
+                                                placeholder={['start date', 'end date']}
+                                                onSelect={(vs) => {
+                                                    setTimeRange(vs)
+                                                }}
+                                            />
+                                            <Table scroll={{ y: 230 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
+                </div >
             </div>
-        </div >
-        </div>
+        </ConfigProvider >
+
     </>
 }

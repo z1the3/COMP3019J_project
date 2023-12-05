@@ -23,8 +23,8 @@ export const UserManagement = () => {
         name: '',
         state: '',
         userId: ''
-      });
-    
+    });
+
 
     const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-gray-800', [mode])
     const bgColor = useMemo(() => mode === 'light' ? '#DCECFB' : '#000000', [mode])
@@ -68,9 +68,11 @@ export const UserManagement = () => {
         render: (col, item: any) => {
             return (
                 <div className="flex">
-                    <Link onClick={() => {setVisible(true)
-                    console.log(item as Record<string, string>)
-                    setItem(item)}}>edit</Link>
+                    <Link onClick={() => {
+                        setVisible(true)
+                        console.log(item as Record<string, string>)
+                        setItem(item)
+                    }}>edit</Link>
                     <Popconfirm
                         focusLock
                         title='Confirm'
@@ -91,10 +93,10 @@ export const UserManagement = () => {
 
     const formItemLayout = {
         labelCol: {
-          span: 4,
+            span: 4,
         },
         wrapperCol: {
-          span: 20,
+            span: 20,
         },
     };
 
@@ -115,7 +117,7 @@ export const UserManagement = () => {
         }
     }
 
-    const editUserReq = async(userId:any, name:any, state:any) => {
+    const editUserReq = async (userId: any, name: any, state: any) => {
         const raw = await editUser({ userId: `${userId}`, name: `${name}`, state: `${state}` })
         if (raw.status === 200) {
             const res = await raw.json()
@@ -135,7 +137,7 @@ export const UserManagement = () => {
 
     const getAllUserReq = async () => {
         const raw = await getAllUser()
-        if (raw.status === 200){
+        if (raw.status === 200) {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.users.map((item) => ({ ...item, key: item.id, state: getState(item.state) }))
             setAllUserData(res.users)
@@ -148,96 +150,98 @@ export const UserManagement = () => {
     function getState(state: string | number) {
         // 根据 state 的值定义真实状态
         switch (state) {
-          case 1:
-            return "Active";
-          case 2:
-            return "Inactive";
-          // 可以根据需要添加更多的状态
-          default:
-            return "Unknown";
+            case 1:
+                return "Active";
+            case 2:
+                return "Inactive";
+            // 可以根据需要添加更多的状态
+            default:
+                return "Unknown";
         }
-      }
+    }
     return <>
-    <div style={{ backgroundColor: bgColor }}>
-        <div className={'container w-screen h-screen flex flex-col'}>
-            {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
-            <div className={`w-screen h-16 ${backgroundColor} flex`}>
-                {/* title */}
-                <div className={`w-screen text-center font-bold text-4xl leading-[4rem] ${textColor}`}>Event Reservation Center</div>
-                {/* identity */}
-                <div className={`absolute right-8 top-4 text-xl ${textColor}`}>{state.userName}</div>
-                {/* log out button */}
-                <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
-                <div className={'absolute left-5 top-6'}>
-                    <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
-                </div>
-            </div>
-            
-            <div className={'w-screen flex-1 flex justify-center items-center'}>
-                <div className={'w-screen h-full flex '}>
-                    {/* 侧边栏 */}
-                    <div className={'w-2/6 h-full bg-indigo-800 flex flex-col'}>
-                        <Link className={' h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/main', {
-                            state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>
-                            <div className="flex items-center">
-                                <img src="/src/assets/menu.png" alt="Icon" className="mr-2" />
-                                Activity List
-                            </div>
-                            </Link>
-                        <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/createActivity', {
-                            state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>
-                            <div className="flex items-center">
-                                <img src="/src/assets/plus-circle.png" alt="Icon" className="mr-2" />
-                                Create Activity
-                            </div>
-                        </Link>
-                        <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/userManagement', {
-                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
-                        })}>
-                            <div className="flex items-center">
-                                <img src="/src/assets/user.png" alt="Icon" className="mr-2" />
-                                User Management
-                            </div>
-                        </Link>
+        <div style={{ backgroundColor: bgColor }}>
+            <div className={'container w-screen h-screen flex flex-col'}>
+                {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
+                <div className={`w-screen h-16 ${backgroundColor} flex`}>
+                    {/* title */}
+                    <div className={`w-screen text-center font-bold text-4xl leading-[4rem] ${textColor}`}>Event Reservation Center</div>
+                    {/* identity */}
+                    <div className={`absolute right-8 top-4 text-xl ${textColor}`}>{state.userName}</div>
+                    {/* log out button */}
+                    <Link onClick={() => navigator('/')} className={'absolute right-24 top-4 text-xl'}>log out </Link>
+                    <div className={'absolute left-5 top-6'}>
+                        <DarkModeSwitch mode={mode} setCurrentMode={setCurrentMode} />
                     </div>
-                    <div className={'w-full h-full p-8'}>
-                        <div className={`w-full h-full flex flex-col rounded-2xl ${backgroundColor}`}>
-                            <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
-                                <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All User</div>
-                                <Divider />
-                            </div>
-                            <div className={'h-full w-full p-8 justify-center '}>
-                                <Table scroll={{ y: 380 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={allUserData} pagination={false} />
+                </div>
+
+                <div className={'w-screen flex-1 flex justify-center items-center'}>
+                    <div className={'w-screen h-full flex '}>
+                        {/* 侧边栏 */}
+                        <div className={'w-2/6 h-full bg-indigo-800 flex flex-col'}>
+                            <Link className={' h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/main', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>
+                                <div className="flex items-center">
+                                    <img src="/src/assets/menu.png" alt="Icon" className="mr-2" />
+                                    Activity List
+                                </div>
+                            </Link>
+                            <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/createActivity', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>
+                                <div className="flex items-center">
+                                    <img src="/src/assets/plus-circle.png" alt="Icon" className="mr-2" />
+                                    Create Activity
+                                </div>
+                            </Link>
+                            <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/userManagement', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>
+                                <div className="flex items-center">
+                                    <img src="/src/assets/user.png" alt="Icon" className="mr-2" />
+                                    User Management
+                                </div>
+                            </Link>
+                        </div>
+                        <div className={'w-full h-full p-8'}>
+                            <div className={`w-full h-full flex flex-col rounded-3xl ${backgroundColor}`}>
+                                <div className={'w-full h-24 bg-red flex flex-col pt-3'}>
+                                    <div className={`w-full text-center font-bold text-2xl leading-[2rem] ${textColor}`}>All User</div>
+                                    <Divider />
+                                </div>
+                                <div className={'h-full w-full p-8 justify-center '}>
+                                    <Table scroll={{ y: 380 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={allUserData} pagination={false} />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div >
-            <Modal
-                title='Modal Title'
-                visible={visible}
-                onOk={() => {editUserReq(item.userId, form.getFieldsValue().name, form.getFieldsValue().state)
-                console.log(form.getFieldsValue().name+" "+form.getFieldsValue().state)}}
-                onCancel={() => setVisible(false)}
-            >
-               <Form
-                    form={form}
-                    labelCol={{
-                        style: { flexBasis: 90 , textAlign: 'center'},
+                </div >
+                <Modal
+                    title='Modal Title'
+                    visible={visible}
+                    onOk={() => {
+                        editUserReq(item.userId, form.getFieldsValue().name, form.getFieldsValue().state)
+                        console.log(form.getFieldsValue().name + " " + form.getFieldsValue().state)
                     }}
-                    wrapperCol={{
-                        style: { flexBasis: 'calc(100% - 90px)'},
-                    }}>
-                    <FormItem label='Name:' field='name' rules={[{ required: true }]}>
-                        <Input placeholder='' />
-                    </FormItem>
-                    <FormItem label='State:' required field='state' rules={[{ required: true }]}>
-                        <Select options={['Normal', 'Ban']} />
-                    </FormItem>
-                </Form>
-            </Modal>
-        </div >
+                    onCancel={() => setVisible(false)}
+                >
+                    <Form
+                        form={form}
+                        labelCol={{
+                            style: { flexBasis: 90, textAlign: 'center' },
+                        }}
+                        wrapperCol={{
+                            style: { flexBasis: 'calc(100% - 90px)' },
+                        }}>
+                        <FormItem label='Name:' field='name' rules={[{ required: true }]}>
+                            <Input placeholder='' />
+                        </FormItem>
+                        <FormItem label='State:' required field='state' rules={[{ required: true }]}>
+                            <Select options={['Normal', 'Ban']} />
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div >
         </div></>
 }
