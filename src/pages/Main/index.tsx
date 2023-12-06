@@ -345,6 +345,9 @@ export const Main = () => {
                                     onSelect={(vs) => {
                                         setTimeRange(vs)
                                     }}
+                                    onClear={() => {
+                                        setTimeRange([])
+                                    }}
                                 />
                                 <Table scroll={{ y: 300 }} noDataElement={'no data'} columns={columns} data={notBookingReservationData} pagination={false} />
                             </div>
@@ -377,6 +380,9 @@ export const Main = () => {
                                             placeholder={['start date', 'end date']}
                                             onSelect={(vs) => {
                                                 setTimeRange(vs)
+                                            }}
+                                            onClear={() => {
+                                                setTimeRange([])
                                             }}
                                         />
                                         <Table rowKey={'id'} noDataElement={'no data'} scroll={{ y: 280 }} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />
@@ -427,6 +433,9 @@ export const Main = () => {
                                                 placeholder={['start date', 'end date']}
                                                 onSelect={(vs) => {
                                                     setTimeRange(vs)
+                                                }}
+                                                onClear={() => {
+                                                    setTimeRange([])
                                                 }}
                                             />
                                             <Table scroll={{ y: 230 }} noDataElement={'no data'} virtualized={true} columns={userColumns} data={notBookingReservationData} pagination={false} />

@@ -80,9 +80,11 @@ export const ReservationDetail = () => {
                                 <div className={'h-full w-full p-6 justify-center'}>
                                     <div className={`w-full flex ${textColor}`}>
                                         <div className={'w-1/3'}>Provider:{state.provider}</div>
-                                        <div className={'w-1/3'}>Reservation Date:{(Array.isArray(state.dates) && state.dates.map((item) => <div>{item}</div>)) || "-"}</div>
-                                        <div>Members:  {isAdmin && Array.isArray(state.userNames) && state.userNames.map((item) => <div>{item}</div>)}
-                                        </div>
+                                        <div className={'w-1/3'}>Reservation Date:{(Array.isArray(state.dates) && state.dates.map((item) => <div>{item}</div>)) ||
+                                            (Array.isArray(state.date) && state.date.map((item) => <div>{item}</div>))}</div>
+                                        {isAdmin &&
+                                            <div>Members:  {Array.isArray(state.userNames) && state.userNames.map((item) => <div>{item}</div>)}
+                                            </div>}
                                     </div>
 
                                     <div className={`w-full flex mt-3 ${textColor}`}>
