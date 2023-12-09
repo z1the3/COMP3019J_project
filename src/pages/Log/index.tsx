@@ -3,23 +3,22 @@
 import { Button, Divider, Input, Link, Message, Modal, Select, Table } from "@arco-design/web-react"
 import { useEffect, useMemo, useState } from "react"
 import { Form, useLocation, useNavigate } from "react-router-dom"
-import { postRegisterReservation } from "../../service/api"
+import { getLog, postRegisterReservation } from "../../service/api"
 import { useModeSwitch } from "../../hooks/useModeSwitch"
 import { DarkModeSwitch } from "../../components/DarkModeSwitch"
-import item from "@arco-design/web-react/es/Breadcrumb/item"
-import form from "@arco-design/web-react/es/Form/form"
-import FormItem from "@arco-design/web-react/es/Form/form-item"
 export const Log = () => {
     // Status brought over from the previous page
     const state: Record<string, string | number | string[]> = useLocation().state || {}
     // 黑夜模式
     const { mode, setCurrentMode } = useModeSwitch()
 
+    // 黑夜模式对应的有区别的样式
     const bgColor = useMemo(() => mode === 'light' ? '#DCECFB' : '#000000', [mode])
     const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-gray-800', [mode])
     const textColor = useMemo(() => mode === 'light' ? 'text-black' : 'text-white', [mode])
     // Hooks for route jumps
     const navigator = useNavigate()
+    const [logContent, setLogContent] = useState<string>('')
     // Status of user identity
     const [isGuest, setIsGuest] = useState<boolean>(false)
     const [isUser, setIsUser] = useState<boolean>(false)
@@ -44,6 +43,20 @@ export const Log = () => {
     }, [])
 
 
+    const getLogReq = async () => {
+        const raw = await getLog()
+        if (raw.status === 200) {
+            const res = await raw.json()
+            setLogContent(res.log)
+        } else {
+            // request failure
+            Message.error(raw.statusText)
+        }
+    }
+
+    useEffect(() => {
+        getLogReq()
+    }, [])
     return <>
         <div style={{ backgroundColor: bgColor }}>
             <div className={'container w-screen h-screen flex flex-col'}>
@@ -97,7 +110,14 @@ export const Log = () => {
                                 </div>
                             </Link>
                         </div>
+                        <div>
+                            <div className={'p-4 text-xl'}>
+                                {logContent.split('\n').map((item) => <div>
+                                    {item}
+                                </div>)
+                                }</div>
 
+                        </div>
                     </div>
                 </div >
             </div >

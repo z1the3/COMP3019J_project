@@ -14,6 +14,7 @@ export const CreateActivity = () => {
     const navigator = useNavigate()
     // Status brought over from the previous page
     const state: Record<string, string | number> = useLocation().state || {}
+    // 创建预约的表单
     const [form] = Form.useForm();
     // 日历是否可见的状态
     const [calenderVisible, setCalendervibible] = useState<boolean>(false)
@@ -93,6 +94,14 @@ export const CreateActivity = () => {
                                     User Management
                                 </div>
                             </Link>
+                            <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/log', {
+                                state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                            })}>
+                                <div className="flex items-center">
+                                    <img src="/src/assets/log.png" alt="Icon" className="mr-2" />
+                                    Log File
+                                </div>
+                            </Link>
                         </div>
                         <div className={'w-full h-full p-8'}>
                             <div className={`w-full ${backgroundColor} flex flex-col rounded-3xl`}>
@@ -100,6 +109,7 @@ export const CreateActivity = () => {
                                     <div className={`w-full text-left text-2xl leading-[2rem] mt-3 ${textColor}`}>Create Reservation</div>
                                     <Divider />
                                 </div>
+                                {/* 创建预约的表单 */}
                                 <div className={'h-full w-full p-8 justify-center'}>
                                     <Form layout="inline" form={form}>
                                         <div className={'flex mb-[48px] w-full'}>
@@ -131,6 +141,7 @@ export const CreateActivity = () => {
                                                 }}>
                                                     <Button className={'mt-0'} onClick={() => setCalendervibible(false)}>Complete</Button>
                                                     <ConfigProvider locale={enUS}>
+                                                        {/* 创建预约时可选的日历 */}
                                                         <Calendar
                                                             headerType='button'
                                                             panelTodayBtn={false}
@@ -159,6 +170,7 @@ export const CreateActivity = () => {
                                         <ConfigProvider locale={enUS}>
 
                                             <div className={'flex justify-between mb-[48px] w-full'}>
+                                                {/* 创建预约选择预约开始时间 */}
                                                 <FormItem className={'w-1/3'} label='Start time' requiredSymbol={false} field='startTimeLimit' rules={[{
                                                     validator(value, cb) {
                                                         if (!value) {
@@ -167,6 +179,7 @@ export const CreateActivity = () => {
                                                         return cb();
                                                     },
                                                 }]}>
+                                                    {/* 创建预约选择预约终止时间 */}
                                                     <TimePicker format='HH:mm' style={{ width: 325 }} placeholder={"please pick time"} />
                                                 </FormItem>
                                                 <FormItem className={'w-1/3'} label='End time' requiredSymbol={false} field='endTimeLimit' rules={[{
@@ -182,6 +195,7 @@ export const CreateActivity = () => {
                                             </div>
                                         </ConfigProvider>
 
+                                        {/* 创建预约给予预约描述 */}
                                         <div className={'flex justify-between w-1/3'}>
                                             <FormItem className={'w-1/3'} label='Description' requiredSymbol={false} field='description' rules={[{
                                                 validator(value, cb) {

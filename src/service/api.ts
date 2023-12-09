@@ -119,8 +119,8 @@ export const deleteAccount = async (params: { userId: string }) => {
 }
 
 // 编辑用户
-export const editUser = async (params: { userId: string, name: string, state:string }) => {
-    const res = await fetch(`api/user/edit`,{
+export const editUser = async (params: { userId: string, name: string, state: string }) => {
+    const res = await fetch(`api/user/edit`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -141,6 +141,17 @@ export const postRegisterReservation = async (params: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(params),
+    })
+    return res
+}
+
+// 用户注册预约
+export const getLog = async () => {
+    const res = await fetch(`api/log`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
     })
     return res
 }
