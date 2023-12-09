@@ -196,18 +196,19 @@ def create_user_router():
             logger.error(f"Error in editing user information: {e}")
             return jsonify({'code': 1, 'message': str(e)}), 500  # 返回错误响应
 
-    @user_bp.route('/log', methods=['GET'])
+    @user_bp.route('/logs', methods=['GET'])
     def get_logs():
         try:
             # 计算 logs 文件夹的绝对路径
-            log_file_path = os.path.join(current_app.root_path, 'logs', 'app.log')
+            logs_dir = os.path.join(os.path.dirname(os.getcwd()), 'logs')
+            log_file_path = os.path.join(logs_dir, 'app.log')
 
             # 读取日志文件的内容
             with open(log_file_path, 'r') as file:
                 log_content = file.read()
 
-            # 返回日志文件的内容
-            return log_content
+            # 返回包含日志文件内容的 JSON 对象
+            return jsonify({'log': log_content})
         except Exception as e:
             # 如果出现异常，返回错误信息
             return jsonify({'error': str(e)}), 500
