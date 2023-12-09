@@ -215,8 +215,13 @@ export const UserManagement = () => {
                 <Modal
                     title='Edit'
                     visible={visible}
-                    onOk={() => {
-                        editUserReq(item.userId, form.getFieldsValue().name, form.getFieldsValue().state)
+                    onOk={async () => {
+                        try {
+                            await form.validate();
+                            editUserReq(item.userId, form.getFieldsValue().name, form.getFieldsValue().state)
+                          }catch (e) {
+                            Message.error('Some infomation is required');
+                          }
                     }}
                     onCancel={() => setVisible(false)}
                 >
