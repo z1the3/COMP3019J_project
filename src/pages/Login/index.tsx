@@ -65,7 +65,7 @@ export const Login = () => {
         <div style={background}>
             {/* Translate CSS code into a class name system through tailwind CSS implementation (such as flex, justify content: center required for flex layout) */}
             {/* Login Card */}
-            <div className={'container flex mx-auto w-2/6  h-screen justify-center items-center'}>
+            <div className={'container flex mx-auto w-2/6 h-screen justify-center items-center'}>
                 <div className={`flex p-[50px] mx-auto h-300 flex-col flex-1 justify-start items-center rounded-3xl ${mode === 'light' ? 'bg-white' : 'bg-black'}`}>
                     {/* Title/Website Name */}
                     <div className={`text-4xl ${mode === 'light' ? 'text-black' : 'text-white'}`}>Event Reservation Center</div>

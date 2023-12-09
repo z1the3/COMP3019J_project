@@ -77,6 +77,7 @@ export const ReservationDetail = () => {
                                     <div className={`w-full text-left text-2xl leading-[2rem] mt-3 ${textColor}`}>{state.name}</div>
                                     <Divider />
                                 </div>
+                                {/* 预约详细内容 */}
                                 <div className={'h-full w-full p-6 justify-center'}>
                                     <div className={`w-full flex ${textColor}`}>
                                         <div className={'w-1/3'}>Provider:{state.provider}</div>

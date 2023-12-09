@@ -18,10 +18,13 @@ export const ModeContext = React.createContext<{ mode: string, setCurrentMode: a
 
 function App() {
 
+  // 黑夜模式初始值
   const [initMode, setInitMode] = useState('light')
 
   return (
+    // 导入到context中
     <ModeContext.Provider value={{ mode: initMode, setCurrentMode: setInitMode }}>
+      {/* 所有用到的前端路由 */}
       <BrowserRouter>
         <Routes>
           <Route path="/" Component={Login} />

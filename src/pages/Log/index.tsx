@@ -19,30 +19,17 @@ export const Log = () => {
     // Hooks for route jumps
     const navigator = useNavigate()
     const [logContent, setLogContent] = useState<string>('')
-    // Status of user identity
-    const [isGuest, setIsGuest] = useState<boolean>(false)
-    const [isUser, setIsUser] = useState<boolean>(false)
-    const [isAdmin, setIsAdmin] = useState<boolean>(false)
+
     // Status brought back from the previous page
     useEffect(() => {
-        if (state.auth === 1) {
-            setIsAdmin(true)
-        } else if (state.auth === 0) {
-            setIsUser(true)
-        } else if (state.auth === -1) {
-            setIsGuest(true)
-        }
-
         // If it is not a tourist login and did not enter through the login button, block login
         if (!state.userId && state.auth !== -1) {
             navigator("/")
             return
         }
-
-        // setAllReservationData(mockData)
     }, [])
 
-
+    // 获取所有Log
     const getLogReq = async () => {
         const raw = await getLog()
         if (raw.status === 200) {
@@ -111,7 +98,8 @@ export const Log = () => {
                             </Link>
                         </div>
                         <div>
-                            <div className={'p-4 text-xl'}>
+                            {/* 按行展示log */}
+                            <div className={`p-4 text-xl ${textColor}`}>
                                 {logContent.split('\n').map((item) => <div>
                                     {item}
                                 </div>)

@@ -212,6 +212,7 @@ export const CreateActivity = () => {
                                             <Button onClick={() => navigator('/main', { state: { userId: state.userId, auth: state.auth, userName: state.userName } })}>Back to menu</Button>
                                             <Button type='primary' onClick={async () => {
                                                 try {
+                                                    // 需要通过表单校验
                                                     await form.validate();
                                                     postCreateReservationReq()
 
