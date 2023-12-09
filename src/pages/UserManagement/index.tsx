@@ -25,18 +25,18 @@ export const UserManagement = () => {
         userId: ''
     });
 
-
+    // 黑夜模式颜色对
     const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-gray-800', [mode])
     const bgColor = useMemo(() => mode === 'light' ? '#DCECFB' : '#000000', [mode])
     const columnColor = useMemo(() => mode === 'light' ? '#E8EEFC' : '#5D616A', [mode])
     const textColor = useMemo(() => mode === 'light' ? 'text-black' : 'text-white', [mode])
 
+    // 启动页面是请求数据
     useEffect(() => {
         getAllUserReq()
-        // setAllReservationData(mockData)
     }, [])
 
-
+    // 表格表头
     const userColumns: ColumnProps<unknown>[] = [{
         title: 'Name',
         dataIndex: 'name',
@@ -65,12 +65,13 @@ export const UserManagement = () => {
             backgroundColor: columnColor,
         },
         width: 180,
+        // 表格操作
         render: (col, item: any) => {
             return (
                 <div className="flex">
                     <Link onClick={() => {
+                        // 显示弹窗
                         setVisible(true)
-                        console.log(item as Record<string, string>)
                         setItem(item)
                     }}>edit</Link>
                     <Popconfirm
@@ -91,15 +92,7 @@ export const UserManagement = () => {
         }
     }]
 
-    const formItemLayout = {
-        labelCol: {
-            span: 4,
-        },
-        wrapperCol: {
-            span: 20,
-        },
-    };
-
+    // 删除用户
     const deleteAccountReq = async (userId: string) => {
         const raw = await deleteAccount({ userId: `${userId}` })
         if (raw.status === 200) {
@@ -117,6 +110,7 @@ export const UserManagement = () => {
         }
     }
 
+    // 编辑用户
     const editUserReq = async (userId: any, name: any, state: any) => {
         const raw = await editUser({ userId: `${userId}`, name: `${name}`, state: `${state}` })
         if (raw.status === 200) {
@@ -135,13 +129,13 @@ export const UserManagement = () => {
         }
     }
 
+    // 获取所有普通用户列表
     const getAllUserReq = async () => {
         const raw = await getAllUser()
         if (raw.status === 200) {
             const res = await raw.json() as Record<string, Record<string, string | number>[]>
             res.users.map((item) => ({ ...item, key: item.id, state: getState(item.state) }))
             setAllUserData(res.users)
-            console.log(res.users)
         } else {
             Message.error(raw.statusText)
         }
@@ -225,12 +219,12 @@ export const UserManagement = () => {
                         </div>
                     </div>
                 </div >
+                {/** 弹窗 */}
                 <Modal
-                    title='Modal Title'
+                    title='Edit'
                     visible={visible}
                     onOk={() => {
                         editUserReq(item.userId, form.getFieldsValue().name, form.getFieldsValue().state)
-                        console.log(form.getFieldsValue().name + " " + form.getFieldsValue().state)
                     }}
                     onCancel={() => setVisible(false)}
                 >
