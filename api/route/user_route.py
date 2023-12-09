@@ -200,7 +200,7 @@ def create_user_router():
     def get_logs():
         try:
             # 计算 logs 文件夹的绝对路径
-            logs_dir = os.path.join(os.path.dirname(os.getcwd()), 'log')
+            logs_dir = os.path.join(os.path.dirname(os.getcwd()), 'logs')
             log_file_path = os.path.join(logs_dir, 'app.log')
 
             # 读取日志文件的内容
