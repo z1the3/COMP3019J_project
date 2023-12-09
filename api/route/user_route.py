@@ -1,6 +1,7 @@
 import logging
+import os
 
-from flask import Blueprint
+from flask import Blueprint, current_app
 from exts import db
 from flask import request, jsonify
 from model.registration import Registration, RegistrationDate
@@ -194,5 +195,21 @@ def create_user_router():
             # 处理异常，并记录错误日志
             logger.error(f"Error in editing user information: {e}")
             return jsonify({'code': 1, 'message': str(e)}), 500  # 返回错误响应
+
+    @user_bp.route('/log', methods=['GET'])
+    def get_logs():
+        try:
+            # 计算 logs 文件夹的绝对路径
+            log_file_path = os.path.join(current_app.root_path, 'logs', 'app.log')
+
+            # 读取日志文件的内容
+            with open(log_file_path, 'r') as file:
+                log_content = file.read()
+
+            # 返回日志文件的内容
+            return log_content
+        except Exception as e:
+            # 如果出现异常，返回错误信息
+            return jsonify({'error': str(e)}), 500
 
     return user_bp
