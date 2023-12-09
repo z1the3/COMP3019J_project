@@ -7,6 +7,7 @@ import { useModeSwitch } from './hooks/useModeSwitch';
 import { CreateActivity } from './pages/CreateActivity';
 import { ReservationDetail } from './pages/ReservationDetail';
 import { UserManagement } from './pages/UserManagement';
+import { Log } from './pages/Log';
 
 
 export const ModeContext = React.createContext<{ mode: string, setCurrentMode: any }>
@@ -29,6 +30,7 @@ function App() {
           <Route path="/main" Component={Main} />
           <Route path="/reservationDetail" Component={ReservationDetail} />
           <Route path="/userManagement" Component={UserManagement} />
+          <Route path="/log" Component={Log} />
 
         </Routes>
       </BrowserRouter>

@@ -418,6 +418,14 @@ export const Main = () => {
                                             User Management
                                         </div>
                                     </Link>
+                                    <Link className={'h-20 flex items-center text-center font-bold text-2xl leading-[2rem] text-white'} onClick={() => navigator('/log', {
+                                        state: { userId: state.userId, auth: state.auth, userName: state.userName }
+                                    })}>
+                                        <div className="flex items-center">
+                                            <img src="/src/assets/log.png" alt="Icon" className="mr-2" />
+                                            Log File
+                                        </div>
+                                    </Link>
                                 </div>
                                 <div className={'w-full p-8'}>
                                     <div className={`w-full h-full flex flex-col rounded-3xl ${backgroundColor}`}>

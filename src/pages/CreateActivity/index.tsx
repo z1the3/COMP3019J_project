@@ -15,16 +15,19 @@ export const CreateActivity = () => {
     // Status brought over from the previous page
     const state: Record<string, string | number> = useLocation().state || {}
     const [form] = Form.useForm();
+    // 日历是否可见的状态
     const [calenderVisible, setCalendervibible] = useState<boolean>(false)
+    // 当前选择的日期范围
     const [pickDates, setPickDates] = useState<string[]>([])
     // 黑夜模式
     const { mode, setCurrentMode } = useModeSwitch()
 
+    // 黑夜模式对应的有区别的样式
     const bgColor = useMemo(() => mode === 'light' ? '#DCECFB' : '#000000', [mode])
     const backgroundColor = useMemo(() => mode === 'light' ? 'bg-white' : 'bg-gray-800', [mode])
     const textColor = useMemo(() => mode === 'light' ? 'text-black' : 'text-white', [mode])
 
-
+    // 创建预约
     const postCreateReservationReq = async () => {
         const param = form.getFields()
         param.date = pickDates
